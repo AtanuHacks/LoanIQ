@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>LoanIQ | Predict Loan</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+
+        /* --------------------------------
+           Prediction Page
+        -------------------------------- */
+
+        .prediction-container {
+            max-width: 1000px;
+        }
+
+        .page-intro {
+            margin-bottom: 30px;
+        }
+
+        .page-intro h2 {
+            margin-bottom: 8px;
+        }
+
+        .page-intro p {
+            color: #6b7280;
+            line-height: 1.6;
+        }
+
+
+        /* --------------------------------
+           Form
+        -------------------------------- */
+
+        .form-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 25px;
+        }
+
+        .form-card h3 {
+            margin-top: 0;
+            margin-bottom: 5px;
+        }
+
+        .form-card-description {
+            color: #6b7280;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 7px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 11px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 7px;
+            font-size: 14px;
+            background: white;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #6b7280;
+        }
+
+        .form-help {
+            color: #9ca3af;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+
+        /* --------------------------------
+           Submit
+        -------------------------------- */
+
+        .submit-area {
+            margin-top: 30px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .submit-button {
+            border: none;
+            cursor: pointer;
+            font-size: 15px;
+            padding: 13px 24px;
+        }
+
+
+        /* --------------------------------
+           Result
+        -------------------------------- */
+
+        .result-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 35px;
+            margin-top: 30px;
+        }
+
+        .result-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .result-header h2 {
+            margin: 10px 0;
+            font-size: 30px;
+        }
+
+        .probability {
+            font-size: 44px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .probability-label {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .risk-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: #f3f4f6;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+
+        /* --------------------------------
+           Result Explanation
+        -------------------------------- */
+
+        .result-explanation {
+            border-top: 1px solid #e5e7eb;
+            padding-top: 25px;
+        }
+
+        .result-explanation h3 {
+            margin-bottom: 10px;
+        }
+
+        .result-explanation p {
+            color: #6b7280;
+            line-height: 1.7;
+        }
+
+
+        /* --------------------------------
+           Disclaimer
+        -------------------------------- */
+
+        .disclaimer {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 25px;
+            color: #6b7280;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+
+        /* --------------------------------
+           Error
+        -------------------------------- */
+
+        .error-card {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 25px;
+        }
+
+        .error-card h3 {
+            margin-top: 0;
+        }
+
+        .error-card p {
+            color: #6b7280;
+            word-break: break-word;
+        }
+
+
+        /* --------------------------------
+           Responsive
+        -------------------------------- */
+
+        @media (max-width: 700px) {
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .result-card {
+                padding: 25px;
+            }
+
+            .probability {
+                font-size: 36px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="app">
+
+
+    <!-- =========================================
+         SIDEBAR
+    ========================================== -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            <span>Loan</span>IQ
+        </div>
+
+        <p class="tagline">
+            Loan Approval & Risk Analysis
+        </p>
+
+
+        <nav>
+
+            <a href="/">
+                Dashboard
+            </a>
+
+            <a href="/predict"
+               class="active">
+                Predict Loan
+            </a>
+
+            <a href="/analytics">
+                Analytics
+            </a>
+
+            <a href="/model">
+                Model Insights
+            </a>
+
+            <a href="/about">
+                About LoanIQ
+            </a>
+
+        </nav>
+
+    </aside>
+
+
+
+    <!-- =========================================
+         MAIN CONTENT
+    ========================================== -->
+
+    <main class="main">
+
+        <header class="topbar">
+
+            <div>
+
+                <h1>
+                    Predict Loan
+                </h1>
+
+                <p>
+                    Estimate loan approval probability
+                    using the LoanIQ model.
+                </p>
+
+            </div>
+
+        </header>
+
+
+        <div class="prediction-container">
+
+
+            <!-- =====================================
+                 INTRO
+            ====================================== -->
+
+            <section class="page-intro">
+
+                <h2>
+                    Loan Eligibility Prediction
+                </h2>
+
+                <p>
+                    Enter the applicant and loan details
+                    below. LoanIQ will estimate the
+                    probability of approval using the
+                    trained Logistic Regression model.
+                </p>
+
+            </section>
+
+
+
+            <!-- =====================================
+                 FORM
+            ====================================== -->
+
+            <form action="/predict"
+                  method="POST">
+
+
+                <!-- ================================
+                     PERSONAL INFORMATION
+                ================================= -->
+
+                <section class="form-card">
+
+                    <h3>
+                        Personal Information
+                    </h3>
+
+                    <p class="form-card-description">
+                        Basic applicant information.
+                    </p>
+
+
+                    <div class="form-grid">
+
+
+                        <!-- Age -->
+
+                        <div class="form-group">
+
+                            <label for="Age">
+                                Age
+                            </label>
+
+                            <input
+                                type="number"
+                                id="Age"
+                                name="Age"
+                                min="18"
+                                max="100"
+                                required>
+
+                        </div>
+
+
+                        <!-- Annual Income -->
+
+                        <div class="form-group">
+
+                            <label for="AnnualIncome">
+                                Annual Income
+                            </label>
+
+                            <input
+                                type="number"
+                                id="AnnualIncome"
+                                name="AnnualIncome"
+                                min="0"
+                                required>
+
+                        </div>
+
+
+                        <!-- Credit Score -->
+
+                        <div class="form-group">
+
+                            <label for="CreditScore">
+                                Credit Score
+                            </label>
+
+                            <input
+                                type="number"
+                                id="CreditScore"
+                                name="CreditScore"
+                                min="300"
+                                max="900"
+                                required>
+
+                        </div>
+
+
+                        <!-- Employment -->
+
+                        <div class="form-group">
+
+                            <label for="EmploymentStatus">
+                                Employment Status
+                            </label>
+
+                            <select
+                                id="EmploymentStatus"
+                                name="EmploymentStatus"
+                                required>
+
+                                <option value="">
+                                    Select
+                                </option>
+
+                                <option value="Employed">
+                                    Employed
+                                </option>
+
+                                <option value="Self-Employed">
+                                    Self-Employed
+                                </option>
+
+                                <option value="Unemployed">
+                                    Unemployed
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- Education -->
+
+                        <div class="form-group">
+
+                            <label for="EducationLevel">
+                                Education Level
+                            </label>
+
+                            <select
+                                id="EducationLevel"
+                                name="EducationLevel"
+                                required>
+
+                                <option value="">
+                                    Select
+                                </option>
+
+                                <option value="High School">
+                                    High School
+                                </option>
+
+                                <option value="Associate">
+                                    Associate
+                                </option>
+
+                                <option value="Bachelor">
+                                    Bachelor
+                                </option>
+
+                                <option value="Master">
+                                    Master
+                                </option>
+
+                                <option value="Doctorate">
+                                    Doctorate
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- Experience -->
+
+                        <div class="form-group">
+
+                            <label for="Experience">
+                                Years of Experience
+                            </label>
+
+                            <input
+                                type="number"
+                                id="Experience"
+                                name="Experience"
+                                min="0"
+                                max="60"
+                                required>
+
+                        </div>
+
+
+                        <!-- Dependents -->
+
+                        <div class="form-group">
+
+                            <label for="NumberOfDependents">
+                                Number of Dependents
+                            </label>
+
+                            <input
+                                type="number"
+                                id="NumberOfDependents"
+                                name="NumberOfDependents"
+                                min="0"
+                                max="20"
+                                required>
+
+                        </div>
+
+
+                        <!-- Marital Status -->
+
+                        <div class="form-group">
+
+                            <label for="MaritalStatus">
+                                Marital Status
+                            </label>
+
+                            <select
+                                id="MaritalStatus"
+                                name="MaritalStatus"
+                                required>
+
+                                <option value="">
+                                    Select
+                                </option>
+
+                                <option value="Single">
+                                    Single
+                                </option>
+
+                                <option value="Married">
+                                    Married
+                                </option>
+
+                                <option value="Divorced">
+                                    Divorced
+                                </option>
+
+                                <option value="Widowed">
+                                    Widowed
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- Home Ownership -->
+
+                        <div class="form-group">
+
+                            <label for="HomeOwnershipStatus">
+                                Home Ownership
+                            </label>
+
+                            <select
+                                id="HomeOwnershipStatus"
+                                name="HomeOwnershipStatus"
+                                required>
+
+                                <option value="">
+                                    Select
+                                </option>
+
+                                <option value="Own">
+                                    Own
+                                </option>
+
+                                <option value="Mortgage">
+                                    Mortgage
+                                </option>
+
+                                <option value="Rent">
+                                    Rent
+                                </option>
+
+                                <option value="Other">
+                                    Other
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+
+                <!-- =================================
+                     LOAN INFORMATION
+                ================================== -->
+
+                <section class="form-card">
+
+                    <h3>
+                        Loan Information
+                    </h3>
+
+                    <p class="form-card-description">
+                        Details about the requested loan.
+                    </p>
+
+
+                    <div class="form-grid">
+
+
+                        <!-- Loan Amount -->
+
+                        <div class="form-group">
+
+                            <label for="LoanAmount">
+                                Loan Amount
+                            </label>
+
+                            <input
+                                type="number"
+                                id="LoanAmount"
+                                name="LoanAmount"
+                                min="0"
+                                required>
+
+                        </div>
+
+
+                        <!-- Loan Duration -->
+
+                        <div class="form-group">
+
+                            <label for="LoanDuration">
+                                Loan Duration (months)
+                            </label>
+
+                            <input
+                                type="number"
+                                id="LoanDuration"
+                                name="LoanDuration"
+                                min="1"
+                                max="360"
+                                required>
+
+                        </div>
+
+
+                        <!-- Loan Purpose -->
+
+                        <div class="form-group">
+
+                            <label for="LoanPurpose">
+                                Loan Purpose
+                            </label>
+
+                            <select
+                                id="LoanPurpose"
+                                name="LoanPurpose"
+                                required>
+
+                                <option value="">
+                                    Select
+                                </option>
+
+                                <option value="Auto">
+                                    Auto
+                                </option>
+
+                                <option value="Debt Consolidation">
+                                    Debt Consolidation
+                                </option>
+
+                                <option value="Education">
+                                    Education
+                                </option>
+
+                                <option value="Home">
+                                    Home
+                                </option>
+
+                                <option value="Other">
+                                    Other
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- Monthly Debt -->
+
+                        <div class="form-group">
+
+                            <label for="MonthlyDebtPayments">
+                                Monthly Debt Payments
+                            </label>
+
+                            <input
+                                type="number"
+                                id="MonthlyDebtPayments"
+                                name="MonthlyDebtPayments"
+                                min="0"
+                                required>
+
+                        </div>
+
+
+                        <!-- Savings -->
+
+                        <div class="form-group">
+
+                            <label for="SavingsAccountBalance">
+                                Savings Account Balance
+                            </label>
+
+                            <input
+                                type="number"
+                                id="SavingsAccountBalance"
+                                name="SavingsAccountBalance"
+                                min="0"
+                                required>
+
+                        </div>
+
+
+                        <!-- Net Worth -->
+
+                        <div class="form-group">
+
+                            <label for="NetWorth">
+                                Net Worth
+                            </label>
+
+                            <input
+                                type="number"
+                                id="NetWorth"
+                                name="NetWorth"
+                                required>
+
+                        </div>
+
+
+                        <!-- Application Date -->
+
+                        <div class="form-group">
+
+                            <label for="ApplicationDate">
+                                Application Date
+                            </label>
+
+                            <input
+                                type="date"
+                                id="ApplicationDate"
+                                name="ApplicationDate"
+                                required>
+
+                            <span class="form-help">
+                                Used to derive application year,
+                                month and day of week.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+
+                <!-- =================================
+                     CREDIT INFORMATION
+                ================================== -->
+
+                <section class="form-card">
+
+                    <h3>
+                        Credit Information
+                    </h3>
+
+                    <p class="form-card-description">
+                        Previous credit and repayment
+                        information.
+                    </p>
+
+
+                    <div class="form-grid">
+
+
+                        <!-- Bankruptcy -->
+
+                        <div class="form-group">
+
+                            <label for="BankruptcyHistory">
+                                Bankruptcy History
+                            </label>
+
+                            <select
+                                id="BankruptcyHistory"
+                                name="BankruptcyHistory"
+                                required>
+
+                                <option value="">
+                                    Select
+                                </option>
+
+                                <option value="0">
+                                    No
+                                </option>
+
+                                <option value="1">
+                                    Yes
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- Previous Defaults -->
+
+                        <div class="form-group">
+
+                            <label for="PreviousLoanDefaults">
+                                Previous Loan Defaults
+                            </label>
+
+                            <select
+                                id="PreviousLoanDefaults"
+                                name="PreviousLoanDefaults"
+                                required>
+
+                                <option value="">
+                                    Select
+                                </option>
+
+                                <option value="0">
+                                    No
+                                </option>
+
+                                <option value="1">
+                                    Yes
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- Credit History -->
+
+                        <div class="form-group">
+
+                            <label for="LengthOfCreditHistory">
+                                Length of Credit History (years)
+                            </label>
+
+                            <input
+                                type="number"
+                                id="LengthOfCreditHistory"
+                                name="LengthOfCreditHistory"
+                                min="0"
+                                max="100"
+                                required>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+
+                <!-- =================================
+                     SUBMIT
+                ================================== -->
+
+                <div class="submit-area">
+
+                    <button
+                        type="submit"
+                        class="primary-button submit-button">
+
+                        Check Loan Eligibility
+
+                    </button>
+
+
+                    <a href="/"
+                       class="secondary-button">
+
+                        Back to Dashboard
+
+                    </a>
+
+                </div>
+
+            </form>
+
+
+
+            <!-- =====================================
+                 ERROR
+            ====================================== -->
+
+            {% if error %}
+
+            <section class="error-card">
+
+                <h3>
+                    Prediction Error
+                </h3>
+
+                <p>
+                    {{ error }}
+                </p>
+
+            </section>
+
+            {% endif %}
+
+
+
+            <!-- =====================================
+                 RESULT
+            ====================================== -->
+
+            {% if submitted %}
+
+            <section class="result-card">
+
+
+                <div class="result-header">
+
+                    <span class="section-label">
+                        LOANIQ PREDICTION
+                    </span>
+
+
+                    <h2>
+
+                        {{ prediction }}
+
+                    </h2>
+
+
+                    <div class="probability">
+
+                        {{ probability }}%
+
+                    </div>
+
+
+                    <div class="probability-label">
+
+                        Approval Probability
+
+                    </div>
+
+
+                    <div class="risk-badge">
+
+                        {{ risk_level }}
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- Explanation -->
+
+                <div class="result-explanation">
+
+                    <h3>
+                        What does this result mean?
+                    </h3>
+
+                    <p>
+
+                        LoanIQ estimates the probability
+                        that this application belongs to
+                        the approved loan class.
+
+                        The final decision uses a prediction
+                        threshold of <strong>45%</strong>.
+
+                    </p>
+
+
+                    {% if prediction == "Loan Approved" %}
+
+                    <p>
+
+                        The predicted approval probability
+                        is at or above the LoanIQ decision
+                        threshold.
+
+                    </p>
+
+                    {% else %}
+
+                    <p>
+
+                        The predicted approval probability
+                        is below the LoanIQ decision
+                        threshold.
+
+                    </p>
+
+                    {% endif %}
+
+                </div>
+
+
+
+                <!-- Future XAI section -->
+
+                <div class="result-explanation">
+
+                    <h3>
+                        Why did LoanIQ make this prediction?
+                    </h3>
+
+                    <p>
+
+                        LoanIQ evaluates multiple applicant,
+                        financial and credit characteristics
+                        simultaneously.
+
+                        The detailed positive and negative
+                        factors influencing this individual
+                        prediction will be shown here.
+
+                    </p>
+
+                </div>
+
+
+
+                <!-- Actions -->
+
+                <div class="hero-actions">
+
+                    <a href="/predict"
+                       class="primary-button">
+
+                        Make Another Prediction
+
+                    </a>
+
+                    <a href="/"
+                       class="secondary-button">
+
+                        Back to Dashboard
+
+                    </a>
+
+                </div>
+
+
+                <!-- Disclaimer -->
+
+                <div class="disclaimer">
+
+                    <strong>Disclaimer:</strong>
+
+                    LoanIQ is an ML-based prediction and
+                    decision-support system developed for
+                    educational and analytical purposes.
+
+                    Its predictions should not be considered
+                    a definitive lending decision.
+
+                </div>
+
+
+            </section>
+
+            {% endif %}
+
+
+        </div>
+
+
+        <!-- Footer -->
+
+        <footer>
+
+            LoanIQ · Data-Driven Loan Approval & Risk Analysis
+
+        </footer>
+
+
+    </main>
+
+</div>
+
+</body>
+
+</html>

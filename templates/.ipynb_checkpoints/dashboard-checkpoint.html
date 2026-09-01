@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>LoanIQ | Dashboard</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- Sidebar -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            <span>Loan</span>IQ
+        </div>
+
+        <p class="tagline">
+            Loan Approval & Risk Analysis
+        </p>
+
+        <nav>
+
+            <a href="/" class="active">
+                Dashboard
+            </a>
+
+            <a href="/predict">
+                Predict Loan
+            </a>
+
+            <a href="/analytics">
+                Analytics
+            </a>
+
+            <a href="/model">
+                Model Insights
+            </a>
+
+            <a href="/about">
+                About LoanIQ
+            </a>
+
+        </nav>
+
+    </aside>
+
+
+    <!-- Main Content -->
+
+    <main class="main">
+
+        <header class="topbar">
+
+            <div>
+                <h1>Dashboard</h1>
+
+                <p>
+                    Overview of LoanIQ's loan approval dataset
+                </p>
+            </div>
+
+            <a href="/predict"
+               class="primary-button">
+
+                Predict Loan
+
+            </a>
+
+        </header>
+
+
+        <!-- KPI Cards -->
+
+        <section class="kpi-grid">
+
+            <div class="kpi-card">
+
+                <span class="kpi-label">
+                    Total Applications
+                </span>
+
+                <strong>
+                    20,000
+                </strong>
+
+                <small>
+                    Applications in dataset
+                </small>
+
+            </div>
+
+
+            <div class="kpi-card">
+
+                <span class="kpi-label">
+                    Approval Rate
+                </span>
+
+                <strong>
+                    23.9%
+                </strong>
+
+                <small>
+                    4,780 approved applications
+                </small>
+
+            </div>
+
+
+            <div class="kpi-card">
+
+                <span class="kpi-label">
+                    Rejection Rate
+                </span>
+
+                <strong>
+                    76.1%
+                </strong>
+
+                <small>
+                    15,220 rejected applications
+                </small>
+
+            </div>
+
+
+            <div class="kpi-card">
+
+                <span class="kpi-label">
+                    Model ROC-AUC
+                </span>
+
+                <strong>
+                    97.86%
+                </strong>
+
+                <small>
+                    Final Logistic Regression
+                </small>
+
+            </div>
+
+        </section>
+
+
+        <!-- Welcome -->
+
+        <section class="hero-card">
+
+            <div>
+
+                <span class="section-label">
+                    LOANIQ
+                </span>
+
+                <h2>
+                    Data-driven loan approval prediction
+                </h2>
+
+                <p>
+                    LoanIQ analyzes applicant, financial and
+                    credit characteristics to estimate the
+                    probability of loan approval using a
+                    Logistic Regression model.
+                </p>
+
+                <div class="hero-actions">
+
+                    <a href="/predict"
+                       class="primary-button">
+
+                        Check Loan Eligibility
+
+                    </a>
+
+                    <a href="/analytics"
+                       class="secondary-button">
+
+                        Explore Analytics
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Quick Access -->
+
+        <section>
+
+            <div class="section-heading">
+
+                <div>
+
+                    <h2>
+                        Explore LoanIQ
+                    </h2>
+
+                    <p>
+                        Access the project's main analysis areas.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="feature-grid">
+
+
+                <a href="/predict"
+                   class="feature-card">
+
+                    <div class="feature-icon">
+                        🔮
+                    </div>
+
+                    <h3>
+                        Predict Loan
+                    </h3>
+
+                    <p>
+                        Enter applicant information and
+                        receive an approval probability,
+                        decision and risk indication.
+                    </p>
+
+                    <span>
+                        Start prediction →
+                    </span>
+
+                </a>
+
+
+                <a href="/analytics"
+                   class="feature-card">
+
+                    <div class="feature-icon">
+                        📊
+                    </div>
+
+                    <h3>
+                        Analytics
+                    </h3>
+
+                    <p>
+                        Explore approval patterns,
+                        applicant characteristics,
+                        financial trends and credit analysis.
+                    </p>
+
+                    <span>
+                        View analytics →
+                    </span>
+
+                </a>
+
+
+                <a href="/model"
+                   class="feature-card">
+
+                    <div class="feature-icon">
+                        🤖
+                    </div>
+
+                    <h3>
+                        Model Insights
+                    </h3>
+
+                    <p>
+                        Review model performance,
+                        important features, confusion matrix
+                        and ROC-AUC.
+                    </p>
+
+                    <span>
+                        View model →
+                    </span>
+
+                </a>
+
+
+                <a href="/about"
+                   class="feature-card">
+
+                    <div class="feature-icon">
+                        💡
+                    </div>
+
+                    <h3>
+                        About LoanIQ
+                    </h3>
+
+                    <p>
+                        Learn about the dataset,
+                        methodology, workflow and project goals.
+                    </p>
+
+                    <span>
+                        Learn more →
+                    </span>
+
+                </a>
+
+
+            </div>
+
+        </section>
+
+
+        <!-- Dataset Summary -->
+
+        <section class="summary-card">
+
+            <div>
+
+                <span class="section-label">
+                    DATASET
+                </span>
+
+                <h2>
+                    20,000 loan applications
+                </h2>
+
+                <p>
+                    The dataset contains 36 attributes covering
+                    applicant demographics, income, credit history,
+                    financial characteristics, loan information
+                    and approval outcomes.
+                </p>
+
+            </div>
+
+            <div class="dataset-stats">
+
+                <div>
+                    <strong>36</strong>
+                    <span>Features</span>
+                </div>
+
+                <div>
+                    <strong>4,780</strong>
+                    <span>Approved</span>
+                </div>
+
+                <div>
+                    <strong>15,220</strong>
+                    <span>Rejected</span>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Footer -->
+
+        <footer>
+
+            LoanIQ · Data-Driven Loan Approval & Risk Analysis
+
+        </footer>
+
+    </main>
+
+</div>
+
+</body>
+
+</html>

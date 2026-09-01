@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>LoanIQ | Analytics</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+
+        .analytics-intro {
+            margin-bottom: 25px;
+        }
+
+        .analytics-intro p {
+            color: #6b7280;
+        }
+
+        .analytics-buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .analytics-button {
+            border: 1px solid #e5e7eb;
+            background: white;
+            border-radius: 10px;
+            padding: 18px;
+            cursor: pointer;
+            text-align: left;
+            font-size: 15px;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        .analytics-button:hover {
+            transform: translateY(-2px);
+        }
+
+        .analytics-button span {
+            display: block;
+            font-size: 25px;
+            margin-bottom: 10px;
+        }
+
+        .analytics-button small {
+            display: block;
+            color: #6b7280;
+            font-weight: normal;
+            margin-top: 5px;
+        }
+
+        .chart-section {
+            display: none;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .chart-section.active {
+            display: block;
+        }
+
+        .chart-section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .chart-section-header h3 {
+            margin: 0;
+        }
+
+        .close-button {
+            border: 1px solid #d1d5db;
+            background: white;
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .chart-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 20px;
+            min-height: 330px;
+        }
+
+        .chart-card h4 {
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 260px;
+        }
+
+        .insight-box {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f9fafb;
+            border-radius: 8px;
+            color: #4b5563;
+            font-size: 14px;
+        }
+
+        @media (max-width: 900px) {
+
+            .analytics-buttons {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .chart-grid {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+        @media (max-width: 600px) {
+
+            .analytics-buttons {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="app">
+
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            <span>Loan</span>IQ
+        </div>
+
+        <p class="tagline">
+            Loan Approval & Risk Analysis
+        </p>
+
+        <nav>
+
+            <a href="/">
+                Dashboard
+            </a>
+
+            <a href="/predict">
+                Predict Loan
+            </a>
+
+            <a href="/analytics"
+               class="active">
+                Analytics
+            </a>
+
+            <a href="/model">
+                Model Insights
+            </a>
+
+            <a href="/about">
+                About LoanIQ
+            </a>
+
+        </nav>
+
+    </aside>
+
+
+    <!-- MAIN -->
+
+    <main class="main">
+
+
+        <header class="topbar">
+
+            <div>
+
+                <h1>
+                    Analytics
+                </h1>
+
+                <p>
+                    Explore patterns and trends in the
+                    LoanIQ dataset.
+                </p>
+
+            </div>
+
+            <a href="/predict"
+               class="primary-button">
+
+                Predict Loan
+
+            </a>
+
+        </header>
+
+
+        <!-- INTRO -->
+
+        <section class="analytics-intro">
+
+            <h2>
+                LoanIQ Data Explorer
+            </h2>
+
+            <p>
+                Explore the characteristics of
+                {{ "{:,}".format(total_applications) }}
+                loan applications.
+                Select a category below to view
+                the relevant visualizations.
+            </p>
+
+        </section>
+
+
+        <!-- KPI CARDS -->
+
+        <section class="kpi-grid">
+
+
+            <div class="kpi-card">
+
+                <span class="kpi-label">
+                    Applications
+                </span>
+
+                <strong>
+                    {{ "{:,}".format(total_applications) }}
+                </strong>
+
+                <small>
+                    Total applications
+                </small>
+
+            </div>
+
+
+            <div class="kpi-card">
+
+                <span class="kpi-label">
+                    Approved
+                </span>
+
+                <strong>
+                    {{ "{:,}".format(approved) }}
+                </strong>
+
+                <small>
+                    {{ approval_rate }}% approval rate
+                </small>
+
+            </div>
+
+
+            <div class="kpi-card">
+
+                <span class="kpi-label">
+                    Average Loan
+                </span>
+
+                <strong>
+                    {{ "{:,.0f}".format(avg_loan_amount) }}
+                </strong>
+
+                <small>
+                    Average loan amount
+                </small>
+
+            </div>
+
+
+            <div class="kpi-card">
+
+                <span class="kpi-label">
+                    Avg Credit Score
+                </span>
+
+                <strong>
+                    {{ "{:,.0f}".format(avg_credit_score) }}
+                </strong>
+
+                <small>
+                    Average credit score
+                </small>
+
+            </div>
+
+
+        </section>
+
+
+        <!-- ANALYTICS BUTTONS -->
+
+        <section>
+
+            <div class="analytics-buttons">
+
+
+                <button class="analytics-button"
+                        onclick="showSection('approval')">
+
+                    <span>📈</span>
+
+                    Approval Analysis
+
+                    <small>
+                        Approval and rejection patterns
+                    </small>
+
+                </button>
+
+
+                <button class="analytics-button"
+                        onclick="showSection('applicant')">
+
+                    <span>👤</span>
+
+                    Applicant Analysis
+
+                    <small>
+                        Applicant characteristics
+                    </small>
+
+                </button>
+
+
+                <button class="analytics-button"
+                        onclick="showSection('financial')">
+
+                    <span>💰</span>
+
+                    Financial Analysis
+
+                    <small>
+                        Income, loans and debt
+                    </small>
+
+                </button>
+
+
+                <button class="analytics-button"
+                        onclick="showSection('credit')">
+
+                    <span>💳</span>
+
+                    Credit Analysis
+
+                    <small>
+                        Credit behaviour and history
+                    </small>
+
+                </button>
+
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ==========================================
+             APPROVAL ANALYSIS
+        =========================================== -->
+
+        <section id="approval"
+                 class="chart-section">
+
+            <div class="chart-section-header">
+
+                <h3>
+                    📈 Approval Analysis
+                </h3>
+
+                <button class="close-button"
+                        onclick="hideSections()">
+
+                    Close
+
+                </button>
+
+            </div>
+
+
+            <div class="chart-grid">
+
+
+                <div class="chart-card">
+
+                    <h4>
+                        Approved vs Not Approved
+                    </h4>
+
+                    <div class="chart-container">
+
+                        <canvas id="approvalChart"></canvas>
+
+                    </div>
+
+                </div>
+
+
+                <div class="chart-card">
+
+                    <h4>
+                        Dataset Overview
+                    </h4>
+
+                    <div class="chart-container">
+
+                        <canvas id="approvalRateChart"></canvas>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+            <div class="insight-box">
+
+                <strong>
+                    Dataset insight:
+                </strong>
+
+                {{ "{:,}".format(approved) }}
+                applications are approved and
+                {{ "{:,}".format(rejected) }}
+                are not approved.
+
+                Overall approval rate:
+                <strong>{{ approval_rate }}%</strong>.
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ==========================================
+             APPLICANT ANALYSIS
+        =========================================== -->
+
+        <section id="applicant"
+                 class="chart-section">
+
+            <div class="chart-section-header">
+
+                <h3>
+                    👤 Applicant Analysis
+                </h3>
+
+                <button class="close-button"
+                        onclick="hideSections()">
+
+                    Close
+
+                </button>
+
+            </div>
+
+
+            <div class="chart-grid">
+
+
+                <div class="chart-card">
+
+                    <h4>
+                        Approval by Employment
+                    </h4>
+
+                    <div class="chart-container">
+
+                        <canvas id="employmentChart"></canvas>
+
+                    </div>
+
+                </div>
+
+
+                <div class="chart-card">
+
+                    <h4>
+                        Approval by Education
+                    </h4>
+
+                    <div class="chart-container">
+
+                        <canvas id="educationChart"></canvas>
+
+                    </div>
+
+                </div>
+
+
+                <div class="chart-card">
+
+                    <h4>
+                        Approval by Home Ownership
+                    </h4>
+
+                    <div class="chart-container">
+
+                        <canvas id="homeChart"></canvas>
+
+                    </div>
+
+                </div>
+
+
+                <div class="chart-card">
+
+                    <h4>
+                        Approval by Loan Purpose
+                    </h4>
+
+                    <div class="chart-container">
+
+                        <canvas id="purposeChart"></canvas>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ==========================================
+             FINANCIAL ANALYSIS
+        =========================================== -->
+
+        <section id="financial"
+                 class="chart-section">
+
+            <div class="chart-section-header">
+
+                <h3>
+                    💰 Financial Analysis
+                </h3>
+
+                <button class="close-button"
+                        onclick="hideSections()">
+
+                    Close
+
+                </button>
+
+            </div>
+
+
+            <div class="chart-grid">
+
+
+                <div class="chart-card">
+
+                    <h4>
+                        Annual Income
+                    </h4>
+
+                    <div class="chart-container">
+
+                        <canvas id="incomeChart"></canvas>
+
+                    </div>
+
+                </div>
+
+
+                <div class="chart-card">
+
+                    <h4>
+                        Loan Amount
+                    </h4>
+
+                    <div class="chart-container">
+
+                        <canvas id="loanAmountChart"></canvas>
+
+                    </div>
+
+                </div>
+
+
+                <div class="chart-card">
+
+                    <h4>
+                        Total Debt-to-Income Ratio
+                    </h4>
+
+                    <div class="chart-container">
+
+                        <canvas id="dtiChart"></canvas>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ==========================================
+             CREDIT ANALYSIS
+        =========================================== -->
+
+        <section id="credit"
+                 class="chart-section">
+
+            <div class="chart-section-header">
+
+                <h3>
+                    💳 Credit Analysis
+                </h3>
+
+                <button class="close-button"
+                        onclick="hideSections()">
+
+                    Close
+
+                </button>
+
+            </div>
+
+
+            <div class="chart-grid">
+
+
+                <div class="chart-card">
+
+                    <h4>
+                        Credit Score
+                    </h4>
+
+                    <div class="chart-container">
+
+                        <canvas id="creditScoreChart"></canvas>
+
+                    </div>
+
+                </div>
+
+
+                <div class="chart-card">
+
+                    <h4>
+                        Previous Loan Defaults
+                    </h4>
+
+                    <div class="chart-container">
+
+                        <canvas id="defaultsChart"></canvas>
+
+                    </div>
+
+                </div>
+
+
+                <div class="chart-card">
+
+                    <h4>
+                        Bankruptcy History
+                    </h4>
+
+                    <div class="chart-container">
+
+                        <canvas id="bankruptcyChart"></canvas>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+
+        <footer>
+
+            LoanIQ · Data-Driven Loan Approval & Risk Analysis
+
+        </footer>
+
+
+    </main>
+
+</div>
+
+
+
+<script>
+
+
+// =====================================================
+// DATA FROM FLASK
+// =====================================================
+
+const approvalData =
+    {{ approval_distribution | safe }};
+
+const employmentData =
+    {{ approval_by_employment | safe }};
+
+const educationData =
+    {{ approval_by_education | safe }};
+
+const homeData =
+    {{ approval_by_home | safe }};
+
+const purposeData =
+    {{ approval_by_purpose | safe }};
+
+const creditScoreData =
+    {{ credit_score | safe }};
+
+const incomeData =
+    {{ income | safe }};
+
+const loanAmountData =
+    {{ loan_amount | safe }};
+
+const dtiData =
+    {{ dti | safe }};
+
+const defaultsData =
+    {{ approval_by_defaults | safe }};
+
+const bankruptcyData =
+    {{ approval_by_bankruptcy | safe }};
+
+
+// =====================================================
+// CHART STORAGE
+// =====================================================
+
+const charts = {};
+
+
+// =====================================================
+// COMMON CHART OPTIONS
+// =====================================================
+
+const commonOptions = {
+
+    responsive: true,
+
+    maintainAspectRatio: false,
+
+    plugins: {
+
+        legend: {
+            display: true
+        }
+
+    }
+
+};
+
+
+// =====================================================
+// SHOW SECTION
+// =====================================================
+
+function showSection(sectionId) {
+
+    hideSections();
+
+    const section =
+        document.getElementById(sectionId);
+
+    section.classList.add("active");
+
+    createCharts(sectionId);
+
+    section.scrollIntoView({
+        behavior: "smooth"
+    });
+
+}
+
+
+// =====================================================
+// HIDE SECTIONS
+// =====================================================
+
+function hideSections() {
+
+    document
+        .querySelectorAll(".chart-section")
+        .forEach(
+            section =>
+                section.classList.remove("active")
+        );
+
+}
+
+
+// =====================================================
+// CREATE CHARTS
+// =====================================================
+
+function createCharts(sectionId) {
+
+
+    // ---------------------------------------------
+    // Approval
+    // ---------------------------------------------
+
+    if (
+        sectionId === "approval" &&
+        !charts.approval
+    ) {
+
+        charts.approval =
+            new Chart(
+
+                document
+                    .getElementById("approvalChart"),
+
+                {
+
+                    type: "doughnut",
+
+                    data: {
+
+                        labels:
+                            approvalData.labels,
+
+                        datasets: [{
+
+                            data:
+                                approvalData.values
+
+                        }]
+
+                    },
+
+                    options: commonOptions
+
+                }
+
+            );
+
+
+        charts.approvalRate =
+            new Chart(
+
+                document
+                    .getElementById("approvalRateChart"),
+
+                {
+
+                    type: "bar",
+
+                    data: {
+
+                        labels:
+                            approvalData.labels,
+
+                        datasets: [{
+
+                            label:
+                                "Applications",
+
+                            data:
+                                approvalData.values
+
+                        }]
+
+                    },
+
+                    options: commonOptions
+
+                }
+
+            );
+
+    }
+
+
+    // ---------------------------------------------
+    // Applicant
+    // ---------------------------------------------
+
+    if (
+        sectionId === "applicant" &&
+        !charts.applicant
+    ) {
+
+        charts.employment =
+            createBarChart(
+                "employmentChart",
+                employmentData,
+                "Approval Rate (%)"
+            );
+
+
+        charts.education =
+            createBarChart(
+                "educationChart",
+                educationData,
+                "Approval Rate (%)"
+            );
+
+
+        charts.home =
+            createBarChart(
+                "homeChart",
+                homeData,
+                "Approval Rate (%)"
+            );
+
+
+        charts.purpose =
+            createBarChart(
+                "purposeChart",
+                purposeData,
+                "Approval Rate (%)"
+            );
+
+    }
+
+
+    // ---------------------------------------------
+    // Financial
+    // ---------------------------------------------
+
+    if (
+        sectionId === "financial" &&
+        !charts.financial
+    ) {
+
+        charts.income =
+            createDistributionChart(
+                "incomeChart",
+                incomeData,
+                "Annual Income"
+            );
+
+
+        charts.loanAmount =
+            createDistributionChart(
+                "loanAmountChart",
+                loanAmountData,
+                "Loan Amount"
+            );
+
+
+        charts.dti =
+            createDistributionChart(
+                "dtiChart",
+                dtiData,
+                "Debt-to-Income Ratio"
+            );
+
+    }
+
+
+    // ---------------------------------------------
+    // Credit
+    // ---------------------------------------------
+
+    if (
+        sectionId === "credit" &&
+        !charts.credit
+    ) {
+
+        charts.creditScore =
+            createDistributionChart(
+                "creditScoreChart",
+                creditScoreData,
+                "Credit Score"
+            );
+
+
+        charts.defaults =
+            createBarChart(
+                "defaultsChart",
+                defaultsData,
+                "Approval Rate (%)"
+            );
+
+
+        charts.bankruptcy =
+            createBarChart(
+                "bankruptcyChart",
+                bankruptcyData,
+                "Approval Rate (%)"
+            );
+
+    }
+
+}
+
+
+// =====================================================
+// BAR CHART
+// =====================================================
+
+function createBarChart(
+    elementId,
+    data,
+    label
+) {
+
+    return new Chart(
+
+        document.getElementById(elementId),
+
+        {
+
+            type: "bar",
+
+            data: {
+
+                labels:
+                    data.labels,
+
+                datasets: [{
+
+                    label: label,
+
+                    data:
+                        data.values
+
+                }]
+
+            },
+
+            options: {
+
+                ...commonOptions,
+
+                scales: {
+
+                    y: {
+
+                        beginAtZero: true
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    );
+
+}
+
+
+// =====================================================
+// DISTRIBUTION CHART
+// =====================================================
+
+function createDistributionChart(
+    elementId,
+    data,
+    label
+) {
+
+    return new Chart(
+
+        document.getElementById(elementId),
+
+        {
+
+            type: "line",
+
+            data: {
+
+                datasets: [
+
+                    {
+
+                        label:
+                            "Approved",
+
+                        data:
+                            data.approved.map(
+                                value => ({
+                                    x: value,
+                                    y: 1
+                                })
+                            ),
+
+                        pointRadius: 2
+
+                    },
+
+                    {
+
+                        label:
+                            "Not Approved",
+
+                        data:
+                            data.rejected.map(
+                                value => ({
+                                    x: value,
+                                    y: 0
+                                })
+                            ),
+
+                        pointRadius: 2
+
+                    }
+
+                ]
+
+            },
+
+            options: {
+
+                ...commonOptions,
+
+                scales: {
+
+                    x: {
+
+                        type: "linear",
+
+                        title: {
+
+                            display: true,
+
+                            text: label
+
+                        }
+
+                    },
+
+                    y: {
+
+                        display: false,
+
+                        min: -0.2,
+
+                        max: 1.2
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    );
+
+}
+
+</script>
+
+
+</body>
+
+</html>
