@@ -1,0 +1,3271 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>LoanIQ | Model Insights</title>
+
+    <!-- =====================================================
+         SHARED LOANIQ CSS
+         This is the SAME stylesheet used by Dashboard,
+         Predict, Analytics and About.
+    ====================================================== -->
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+    <!-- =====================================================
+         MODEL INSIGHTS ONLY
+         All classes are prefixed with "mi-"
+         so they cannot interfere with the sidebar.
+    ====================================================== -->
+
+<style>
+
+/* =========================================================
+   MODEL INSIGHTS PAGE
+   IMPORTANT:
+   - Do NOT style .sidebar
+   - Do NOT style .logo
+   - Do NOT style .nav-item
+   - Do NOT style the application shell
+   - Those are controlled by static/style.css
+========================================================= */
+
+
+/* =========================================================
+   MAIN MODEL PAGE
+========================================================= */
+
+.mi-page {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   MODEL HEADER
+========================================================= */
+
+.mi-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 25px;
+    margin-bottom: 35px;
+}
+
+.mi-header h2 {
+    margin: 0 0 8px;
+    font-size: 28px;
+}
+
+.mi-header p {
+    margin: 0;
+    color: #6b7280;
+    line-height: 1.6;
+}
+
+.mi-badge {
+    background: #111827;
+    color: white;
+    padding: 10px 17px;
+    border-radius: 7px;
+    font-size: 13px;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   SECTIONS
+========================================================= */
+
+.mi-section {
+    margin-bottom: 35px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.mi-section-heading {
+    margin-bottom: 18px;
+}
+
+.mi-section-heading h2 {
+    margin: 0 0 6px;
+    font-size: 22px;
+}
+
+.mi-section-heading p {
+    margin: 0;
+    color: #6b7280;
+    line-height: 1.6;
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   PERFORMANCE CARDS
+========================================================= */
+
+.mi-metrics {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 18px;
+    width: 100%;
+    max-width: 100%;
+}
+
+.mi-metric-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 22px;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+.mi-metric-label {
+    color: #6b7280;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.mi-metric-value {
+    font-size: 30px;
+    font-weight: bold;
+    margin-bottom: 7px;
+}
+
+.mi-metric-note {
+    color: #9ca3af;
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   DATASET CARDS
+========================================================= */
+
+.mi-dataset-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 18px;
+    width: 100%;
+    max-width: 100%;
+}
+
+.mi-dataset-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 22px;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+.mi-dataset-label {
+    color: #6b7280;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.mi-dataset-value {
+    font-size: 28px;
+    font-weight: bold;
+}
+
+
+/* =========================================================
+   TWO COLUMN LAYOUT
+========================================================= */
+
+.mi-two-column {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 20px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.mi-two-column > * {
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   GENERAL CARDS
+========================================================= */
+
+.mi-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 25px;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.mi-card h3 {
+    margin: 0 0 7px;
+    font-size: 18px;
+}
+
+.mi-card-description {
+    color: #6b7280;
+    font-size: 13px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+
+/* =========================================================
+   CHART CONTAINERS
+========================================================= */
+
+.mi-chart {
+    position: relative;
+    height: 330px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.mi-chart-tall {
+    position: relative;
+    height: 400px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   INSIGHT BOX
+========================================================= */
+
+.mi-insight-box {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 18px;
+    margin-top: 20px;
+    color: #6b7280;
+    font-size: 13px;
+    line-height: 1.7;
+    box-sizing: border-box;
+}
+
+.mi-insight-box strong {
+    color: #1f2937;
+}
+
+
+/* =========================================================
+   CONFUSION MATRIX
+========================================================= */
+
+.mi-confusion-wrapper {
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.mi-confusion-table {
+    border-collapse: separate;
+    border-spacing: 6px;
+    margin: 10px auto;
+    max-width: 100%;
+}
+
+.mi-confusion-table td {
+    width: 150px;
+    height: 105px;
+    text-align: center;
+    border-radius: 8px;
+}
+
+.mi-confusion-heading {
+    background: transparent !important;
+    color: #6b7280;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.mi-true {
+    background: #ecfdf5;
+    border: 1px solid #bbf7d0;
+    color: #166534;
+}
+
+.mi-false {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #991b1b;
+}
+
+.mi-confusion-number {
+    display: block;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.mi-confusion-label {
+    display: block;
+    font-size: 11px;
+    margin-top: 5px;
+}
+
+
+/* =========================================================
+   MODEL COMPARISON TABLE
+   Keep this independently scrollable.
+========================================================= */
+
+.mi-table-wrapper {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    box-sizing: border-box;
+}
+
+.mi-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.mi-table th {
+    background: #f9fafb;
+    color: #6b7280;
+    font-size: 12px;
+    text-align: left;
+    padding: 13px;
+    border-bottom: 1px solid #e5e7eb;
+    white-space: nowrap;
+}
+
+.mi-table td {
+    padding: 13px;
+    font-size: 13px;
+    border-bottom: 1px solid #f3f4f6;
+    white-space: nowrap;
+}
+
+.mi-table tr.mi-selected {
+    background: #f9fafb;
+    font-weight: bold;
+}
+
+
+/* =========================================================
+   FEATURE COEFFICIENTS
+========================================================= */
+
+.mi-feature-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.mi-feature-row {
+    padding: 14px 0;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.mi-feature-row:last-child {
+    border-bottom: none;
+}
+
+.mi-feature-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 8px;
+}
+
+.mi-feature-name {
+    font-size: 13px;
+}
+
+.mi-feature-value {
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.mi-feature-track {
+    height: 7px;
+    background: #f3f4f6;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.mi-positive {
+    height: 100%;
+    background: #16a34a;
+    border-radius: 10px;
+}
+
+.mi-negative {
+    height: 100%;
+    background: #dc2626;
+    border-radius: 10px;
+}
+
+
+/* =========================================================
+   TEXT / INTERPRETATION
+========================================================= */
+
+.mi-text {
+    color: #6b7280;
+    font-size: 14px;
+    line-height: 1.8;
+}
+
+.mi-text strong {
+    color: #1f2937;
+}
+
+.mi-list {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.mi-list li {
+    color: #6b7280;
+    font-size: 14px;
+    line-height: 1.8;
+    margin-bottom: 10px;
+}
+
+.mi-list li strong {
+    color: #1f2937;
+}
+
+
+/* =========================================================
+   WORKFLOW
+========================================================= */
+
+.mi-workflow {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 12px;
+    width: 100%;
+    max-width: 100%;
+}
+
+.mi-workflow-box {
+    text-align: center;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 18px 10px;
+    min-width: 0;
+}
+
+.mi-workflow-box strong {
+    display: block;
+    font-size: 13px;
+    margin-bottom: 7px;
+}
+
+.mi-workflow-box span {
+    color: #6b7280;
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   CORRELATION / LEAKAGE HEATMAP
+   THIS IS THE IMPORTANT FIX
+========================================================= */
+
+.mi-heatmap-wrapper {
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+
+/*
+   Force the correlation matrix to fit inside
+   the available card width.
+*/
+
+.mi-heatmap {
+    width: 100%;
+    max-width: 100%;
+    table-layout: fixed;
+    border-collapse: separate;
+    border-spacing: 3px;
+    box-sizing: border-box;
+}
+
+
+/*
+   Heatmap headers
+*/
+
+.mi-heatmap th {
+    width: auto;
+    font-size: 9px;
+    color: #6b7280;
+    padding: 5px 3px;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+    text-align: center;
+}
+
+
+/*
+   Heatmap cells
+*/
+
+.mi-heatmap td {
+    height: 45px;
+    text-align: center;
+    font-size: 11px;
+    font-weight: bold;
+    border-radius: 5px;
+    padding: 3px;
+    word-break: break-word;
+}
+
+
+/*
+   First column containing row labels
+*/
+
+.mi-heatmap tbody th {
+    text-align: right;
+    white-space: normal;
+    word-break: break-word;
+}
+
+
+/* =========================================================
+   CSV PREVIEW
+   DO NOT FORCE A MINIMUM WIDTH HERE
+========================================================= */
+
+.mi-csv-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.mi-csv-table th {
+    background: #f9fafb;
+    color: #6b7280;
+    font-size: 11px;
+    text-align: left;
+    padding: 12px;
+    white-space: nowrap;
+}
+
+.mi-csv-table td {
+    padding: 11px 12px;
+    border-bottom: 1px solid #f3f4f6;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.mi-approved {
+    color: #15803d;
+    font-weight: bold;
+}
+
+.mi-rejected {
+    color: #b91c1c;
+    font-weight: bold;
+}
+
+
+/* =========================================================
+   PAGE-LEVEL OVERFLOW PROTECTION
+========================================================= */
+
+.mi-page,
+.mi-section,
+.mi-two-column,
+.mi-card,
+.mi-metrics,
+.mi-dataset-grid,
+.mi-workflow {
+    min-width: 0;
+}
+
+
+/* =========================================================
+   RESPONSIVE - TABLET
+========================================================= */
+
+@media (max-width: 1100px) {
+
+    .mi-metrics {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .mi-dataset-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .mi-workflow {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+}
+
+
+/* =========================================================
+   RESPONSIVE - SMALL DESKTOP / TABLET
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .mi-two-column {
+        grid-template-columns: 1fr;
+    }
+
+    .mi-header {
+        flex-direction: column;
+    }
+
+}
+
+
+/* =========================================================
+   RESPONSIVE - MOBILE
+========================================================= */
+
+@media (max-width: 700px) {
+
+    .mi-metrics {
+        grid-template-columns: 1fr;
+    }
+
+    .mi-dataset-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .mi-workflow {
+        grid-template-columns: 1fr;
+    }
+
+    .mi-confusion-table td {
+        width: 110px;
+        height: 85px;
+    }
+
+    .mi-confusion-number {
+        font-size: 23px;
+    }
+
+    .mi-heatmap th {
+        font-size: 8px;
+    }
+
+    .mi-heatmap td {
+        font-size: 10px;
+        height: 40px;
+    }
+
+}
+
+
+/* =========================================================
+   EXTRA SMALL SCREENS
+========================================================= */
+
+@media (max-width: 500px) {
+
+    .mi-header h2 {
+        font-size: 23px;
+    }
+
+    .mi-section-heading h2 {
+        font-size: 19px;
+    }
+
+    .mi-card {
+        padding: 18px;
+    }
+
+    .mi-heatmap {
+        border-spacing: 2px;
+    }
+
+    .mi-heatmap th {
+        font-size: 7px;
+        padding: 3px 2px;
+    }
+
+    .mi-heatmap td {
+        font-size: 9px;
+        height: 35px;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================================================
+     EXACT SAME APPLICATION SHELL AS DASHBOARD
+========================================================== -->
+
+<div class="app">
+
+
+    <!-- =====================================================
+         SIDEBAR
+         EXACT STRUCTURE FROM WORKING DASHBOARD
+    ====================================================== -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+
+            <span>Loan</span>IQ
+
+        </div>
+
+
+        <p class="tagline">
+
+            Loan Approval & Risk Analysis
+
+        </p>
+
+
+        <nav>
+
+            <a href="/">
+                Dashboard
+            </a>
+
+
+            <a href="/predict">
+                Predict Loan
+            </a>
+
+
+            <a href="/analytics">
+                Analytics
+            </a>
+
+
+            <a href="/model"
+               class="active">
+
+                Model Insights
+
+            </a>
+
+
+            <a href="/about">
+                About LoanIQ
+            </a>
+
+        </nav>
+
+    </aside>
+
+
+    <!-- =====================================================
+         MAIN
+    ====================================================== -->
+
+    <main class="main">
+
+
+        <!-- =================================================
+             TOPBAR
+        ================================================== -->
+
+        <header class="topbar">
+
+            <div>
+
+                <h1>
+                    Model Insights
+                </h1>
+
+                <p>
+                    Understanding how the LoanIQ machine learning
+                    model evaluates loan applications.
+                </p>
+
+            </div>
+
+        </header>
+
+
+        <!-- =================================================
+             MODEL CONTENT
+        ================================================= -->
+
+        <div class="mi-page">
+
+
+            <!-- =================================================
+                 INTRO
+            ================================================== -->
+
+            <section class="mi-section">
+
+                <div class="mi-header">
+
+                    <div>
+
+                        <h2>
+                            LoanIQ Machine Learning Model
+                        </h2>
+
+                        <p>
+                            Explore model performance, feature relationships,
+                            decision thresholds, coefficients and dataset
+                            characteristics identified during the project.
+                        </p>
+
+                    </div>
+
+
+                    <div class="mi-badge">
+
+                        Logistic Regression
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 1. MODEL PERFORMANCE
+            ================================================== -->
+
+            <section class="mi-section">
+
+                <div class="mi-section-heading">
+
+                    <h2>
+                        Model Performance
+                    </h2>
+
+                    <p>
+                        Final Logistic Regression results on the held-out
+                        test dataset.
+                    </p>
+
+                </div>
+
+
+                <div class="mi-metrics">
+
+
+                    <div class="mi-metric-card">
+
+                        <div class="mi-metric-label">
+                            Accuracy
+                        </div>
+
+                        <div class="mi-metric-value">
+                            93.33%
+                        </div>
+
+                        <div class="mi-metric-note">
+                            Overall prediction accuracy
+                        </div>
+
+                    </div>
+
+
+                    <div class="mi-metric-card">
+
+                        <div class="mi-metric-label">
+                            Precision
+                        </div>
+
+                        <div class="mi-metric-value">
+                            87.57%
+                        </div>
+
+                        <div class="mi-metric-note">
+                            Correct approval predictions
+                        </div>
+
+                    </div>
+
+
+                    <div class="mi-metric-card">
+
+                        <div class="mi-metric-label">
+                            Recall
+                        </div>
+
+                        <div class="mi-metric-value">
+                            84.00%
+                        </div>
+
+                        <div class="mi-metric-note">
+                            Approved cases detected
+                        </div>
+
+                    </div>
+
+
+                    <div class="mi-metric-card">
+
+                        <div class="mi-metric-label">
+                            F1 Score
+                        </div>
+
+                        <div class="mi-metric-value">
+                            85.74%
+                        </div>
+
+                        <div class="mi-metric-note">
+                            Precision-recall balance
+                        </div>
+
+                    </div>
+
+
+                    <div class="mi-metric-card">
+
+                        <div class="mi-metric-label">
+                            ROC-AUC
+                        </div>
+
+                        <div class="mi-metric-value">
+                            97.86%
+                        </div>
+
+                        <div class="mi-metric-note">
+                            Classification ranking ability
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 2. DATASET SNAPSHOT
+            ================================================== -->
+
+            <section class="mi-section">
+
+                <div class="mi-section-heading">
+
+                    <h2>
+                        Dataset Snapshot
+                    </h2>
+
+                    <p>
+                        Summary of the original LoanIQ dataset.
+                    </p>
+
+                </div>
+
+
+                <div class="mi-dataset-grid">
+
+
+                    <div class="mi-dataset-card">
+
+                        <div class="mi-dataset-label">
+                            Total Applications
+                        </div>
+
+                        <div class="mi-dataset-value">
+                            {{ total_records }}
+                        </div>
+
+                    </div>
+
+
+                    <div class="mi-dataset-card">
+
+                        <div class="mi-dataset-label">
+                            Original Features
+                        </div>
+
+                        <div class="mi-dataset-value">
+                            {{ total_features }}
+                        </div>
+
+                    </div>
+
+
+                    <div class="mi-dataset-card">
+
+                        <div class="mi-dataset-label">
+                            Approved
+                        </div>
+
+                        <div class="mi-dataset-value">
+                            {{ approved_count }}
+                        </div>
+
+                    </div>
+
+
+                    <div class="mi-dataset-card">
+
+                        <div class="mi-dataset-label">
+                            Not Approved
+                        </div>
+
+                        <div class="mi-dataset-value">
+                            {{ not_approved_count }}
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 3. NOTEBOOK VISUALIZATIONS
+            ================================================== -->
+
+            <section class="mi-section">
+
+                <div class="mi-section-heading">
+
+                    <h2>
+                        Exploratory Model Analysis
+                    </h2>
+
+                    <p>
+                        Key visual analyses performed during dataset and
+                        model investigation.
+                    </p>
+
+                </div>
+
+
+                <div class="mi-two-column">
+
+
+                    <!-- APPROVAL DISTRIBUTION -->
+
+                    <div class="mi-card">
+
+                        <h3>
+                            Loan Approval Distribution
+                        </h3>
+
+                        <div class="mi-card-description">
+
+                            Distribution of approved and non-approved
+                            applications in the dataset.
+
+                        </div>
+
+
+                        <div class="mi-chart">
+
+                            <canvas id="approvalChart"></canvas>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- RISK SCORE -->
+
+                    <div class="mi-card">
+
+                        <h3>
+                            Risk Score vs Loan Approval
+                        </h3>
+
+                        <div class="mi-card-description">
+
+                            RiskScore shows a clear difference between
+                            approved and non-approved applications.
+
+                        </div>
+
+
+                        <div class="mi-chart">
+
+                            <canvas id="riskChart"></canvas>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 4. CORRELATION ANALYSIS
+            ================================================== -->
+
+            <section class="mi-section">
+
+                <div class="mi-two-column">
+
+
+                    <!-- TOP CORRELATIONS -->
+
+                    <div class="mi-card">
+
+                        <h3>
+                            Top Numerical Features Correlated with Loan Approval
+                        </h3>
+
+                        <div class="mi-card-description">
+
+                            Numerical relationships identified during
+                            feature analysis.
+
+                        </div>
+
+
+                        <div class="mi-chart-tall">
+
+                            <canvas id="correlationChart"></canvas>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- LEAKAGE -->
+
+                    <div class="mi-card">
+
+                        <h3>
+                            Potential Leakage Feature Correlations
+                        </h3>
+
+                        <div class="mi-card-description">
+
+                            Correlations among features that required
+                            additional feature auditing.
+
+                        </div>
+
+
+                        <div class="mi-heatmap-wrapper">
+
+                            <table class="mi-heatmap"
+                                   id="leakageHeatmap">
+
+                            </table>
+
+                        </div>
+
+
+                        <div class="mi-insight-box">
+
+                            <strong>
+                                Important observation:
+                            </strong>
+
+                            InterestRate and BaseInterestRate have a strong
+                            correlation of approximately <strong>0.83</strong>.
+
+                            <br><br>
+
+                            MonthlyLoanPayment and TotalDebtToIncomeRatio
+                            also show a relatively strong relationship
+                            of approximately <strong>0.57</strong>.
+
+                            <br><br>
+
+                            Correlation alone does not prove data leakage,
+                            but these relationships are useful signals for
+                            feature auditing.
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 5. CORRELATION FINDINGS
+            ================================================== -->
+
+            <section class="mi-section">
+
+                <div class="mi-section-heading">
+
+                    <h2>
+                        Key Correlation Findings
+                    </h2>
+
+                    <p>
+                        Main observations from the numerical feature analysis.
+                    </p>
+
+                </div>
+
+
+                <div class="mi-two-column">
+
+
+                    <div class="mi-card">
+
+                        <h3>
+                            💰 Income & Financial Position
+                        </h3>
+
+                        <div class="mi-text">
+
+                            <strong>MonthlyIncome</strong> and
+                            <strong>AnnualIncome</strong> show strong
+                            positive relationships with LoanApproved.
+
+                            <br><br>
+
+                            <strong>NetWorth</strong> and
+                            <strong>TotalAssets</strong> also show
+                            positive relationships.
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="mi-card">
+
+                        <h3>
+                            ⚠️ Risk & Debt
+                        </h3>
+
+                        <div class="mi-text">
+
+                            <strong>RiskScore</strong> has a strong negative
+                            relationship with LoanApproved.
+
+                            <br><br>
+
+                            <strong>TotalDebtToIncomeRatio</strong> also
+                            shows a negative relationship, indicating the
+                            importance of debt burden in the dataset.
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 6. CONFUSION MATRIX
+            ================================================== -->
+
+            <section class="mi-section">
+
+                <div class="mi-section-heading">
+
+                    <h2>
+                        Confusion Matrix
+                    </h2>
+
+                    <p>
+                        Final Logistic Regression classification using
+                        the selected 0.45 decision threshold.
+                    </p>
+
+                </div>
+
+
+                <div class="mi-card">
+
+                    <div class="mi-confusion-wrapper">
+
+                        <table class="mi-confusion-table">
+
+
+                            <tr>
+
+                                <td class="mi-confusion-heading"></td>
+
+                                <td class="mi-confusion-heading">
+
+                                    Predicted<br>
+                                    Not Approved
+
+                                </td>
+
+                                <td class="mi-confusion-heading">
+
+                                    Predicted<br>
+                                    Approved
+
+                                </td>
+
+                            </tr>
+
+
+                            <tr>
+
+                                <td class="mi-confusion-heading">
+
+                                    Actual<br>
+                                    Not Approved
+
+                                </td>
+
+
+                                <td class="mi-true">
+
+                                    <span class="mi-confusion-number">
+                                        2911
+                                    </span>
+
+                                    <span class="mi-confusion-label">
+                                        True Negative
+                                    </span>
+
+                                </td>
+
+
+                                <td class="mi-false">
+
+                                    <span class="mi-confusion-number">
+                                        133
+                                    </span>
+
+                                    <span class="mi-confusion-label">
+                                        False Positive
+                                    </span>
+
+                                </td>
+
+                            </tr>
+
+
+                            <tr>
+
+                                <td class="mi-confusion-heading">
+
+                                    Actual<br>
+                                    Approved
+
+                                </td>
+
+
+                                <td class="mi-false">
+
+                                    <span class="mi-confusion-number">
+                                        136
+                                    </span>
+
+                                    <span class="mi-confusion-label">
+                                        False Negative
+                                    </span>
+
+                                </td>
+
+
+                                <td class="mi-true">
+
+                                    <span class="mi-confusion-number">
+                                        820
+                                    </span>
+
+                                    <span class="mi-confusion-label">
+                                        True Positive
+                                    </span>
+
+                                </td>
+
+                            </tr>
+
+
+                        </table>
+
+                    </div>
+
+
+                    <div class="mi-insight-box">
+
+                        The selected threshold of <strong>0.45</strong>
+                        provides a slightly better balance between
+                        precision and recall than the default 0.50 threshold.
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 7. MODEL COMPARISON
+            ================================================== -->
+
+            <section class="mi-section">
+
+                <div class="mi-section-heading">
+
+                    <h2>
+                        Model Comparison
+                    </h2>
+
+                    <p>
+                        Multiple machine learning algorithms were evaluated
+                        before selecting the final model.
+                    </p>
+
+                </div>
+
+
+                <div class="mi-card">
+
+                    <div class="mi-chart">
+
+                        <canvas id="modelComparisonChart"></canvas>
+
+                    </div>
+
+                </div>
+
+
+                <br>
+
+
+                <div class="mi-card">
+
+                    <div class="mi-table-wrapper">
+
+                        <table class="mi-table">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+                                        Model
+                                    </th>
+
+                                    <th>
+                                        Accuracy
+                                    </th>
+
+                                    <th>
+                                        Precision
+                                    </th>
+
+                                    <th>
+                                        Recall
+                                    </th>
+
+                                    <th>
+                                        F1 Score
+                                    </th>
+
+                                    <th>
+                                        ROC-AUC
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+
+                                <tr class="mi-selected">
+
+                                    <td>
+                                        ★ Logistic Regression
+                                    </td>
+
+                                    <td>
+                                        93.33%
+                                    </td>
+
+                                    <td>
+                                        87.57%
+                                    </td>
+
+                                    <td>
+                                        84.00%
+                                    </td>
+
+                                    <td>
+                                        85.74%
+                                    </td>
+
+                                    <td>
+                                        97.86%
+                                    </td>
+
+                                </tr>
+
+
+                                <tr>
+
+                                    <td>
+                                        Tuned Logistic Regression
+                                    </td>
+
+                                    <td>
+                                        93.20%
+                                    </td>
+
+                                    <td>
+                                        86.93%
+                                    </td>
+
+                                    <td>
+                                        84.21%
+                                    </td>
+
+                                    <td>
+                                        85.55%
+                                    </td>
+
+                                    <td>
+                                        97.87%
+                                    </td>
+
+                                </tr>
+
+
+                                <tr>
+
+                                    <td>
+                                        Gradient Boosting
+                                    </td>
+
+                                    <td>
+                                        92.75%
+                                    </td>
+
+                                    <td>
+                                        87.42%
+                                    </td>
+
+                                    <td>
+                                        81.38%
+                                    </td>
+
+                                    <td>
+                                        84.29%
+                                    </td>
+
+                                    <td>
+                                        97.46%
+                                    </td>
+
+                                </tr>
+
+
+                                <tr>
+
+                                    <td>
+                                        Tuned Gradient Boosting
+                                    </td>
+
+                                    <td>
+                                        93.25%
+                                    </td>
+
+                                    <td>
+                                        87.69%
+                                    </td>
+
+                                    <td>
+                                        83.47%
+                                    </td>
+
+                                    <td>
+                                        85.53%
+                                    </td>
+
+                                    <td>
+                                        97.79%
+                                    </td>
+
+                                </tr>
+
+
+                                <tr>
+
+                                    <td>
+                                        Random Forest
+                                    </td>
+
+                                    <td>
+                                        91.50%
+                                    </td>
+
+                                    <td>
+                                        87.93%
+                                    </td>
+
+                                    <td>
+                                        74.69%
+                                    </td>
+
+                                    <td>
+                                        80.77%
+                                    </td>
+
+                                    <td>
+                                        96.57%
+                                    </td>
+
+                                </tr>
+
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 8. THRESHOLD ANALYSIS
+            ================================================== -->
+
+            <section class="mi-section">
+
+                <div class="mi-section-heading">
+
+                    <h2>
+                        Decision Threshold Analysis
+                    </h2>
+
+                    <p>
+                        Evaluation of different probability thresholds
+                        for the final Logistic Regression model.
+                    </p>
+
+                </div>
+
+
+                <div class="mi-card">
+
+                    <div class="mi-chart">
+
+                        <canvas id="thresholdChart"></canvas>
+
+                    </div>
+
+
+                    <div class="mi-insight-box">
+
+                        <strong>
+                            Selected threshold: 0.45
+                        </strong>
+
+                        <br><br>
+
+                        The 0.45 threshold produced the highest F1 score
+                        among the tested thresholds:
+
+                        <strong>
+                            F1 = 85.91%
+                        </strong>
+
+                        compared with 85.74% at the default 0.50 threshold.
+
+                        <br><br>
+
+                        This threshold was therefore selected for the
+                        LoanIQ prediction application.
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 9. FEATURE COEFFICIENTS
+            ================================================== -->
+
+            <section class="mi-section">
+
+                <div class="mi-section-heading">
+
+                    <h2>
+                        Logistic Regression Feature Influence
+                    </h2>
+
+                    <p>
+                        Model coefficients show the direction and relative
+                        strength of each feature's contribution.
+                    </p>
+
+                </div>
+
+
+                <div class="mi-card">
+
+                    <div class="mi-feature-list">
+
+
+                        <!-- TOTAL DTI -->
+
+                        <div class="mi-feature-row">
+
+                            <div class="mi-feature-top">
+
+                                <span class="mi-feature-name">
+                                    Total Debt-to-Income Ratio
+                                </span>
+
+                                <span class="mi-feature-value"
+                                      style="color:#dc2626;">
+
+                                    −6.388
+
+                                </span>
+
+                            </div>
+
+                            <div class="mi-feature-track">
+
+                                <div class="mi-negative"
+                                     style="width:100%;"></div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ANNUAL INCOME -->
+
+                        <div class="mi-feature-row">
+
+                            <div class="mi-feature-top">
+
+                                <span class="mi-feature-name">
+                                    Annual Income
+                                </span>
+
+                                <span class="mi-feature-value"
+                                      style="color:#15803d;">
+
+                                    +2.132
+
+                                </span>
+
+                            </div>
+
+                            <div class="mi-feature-track">
+
+                                <div class="mi-positive"
+                                     style="width:33.4%;"></div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- NET WORTH -->
+
+                        <div class="mi-feature-row">
+
+                            <div class="mi-feature-top">
+
+                                <span class="mi-feature-name">
+                                    Net Worth
+                                </span>
+
+                                <span class="mi-feature-value"
+                                      style="color:#15803d;">
+
+                                    +1.628
+
+                                </span>
+
+                            </div>
+
+                            <div class="mi-feature-track">
+
+                                <div class="mi-positive"
+                                     style="width:25.5%;"></div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- LOAN DURATION -->
+
+                        <div class="mi-feature-row">
+
+                            <div class="mi-feature-top">
+
+                                <span class="mi-feature-name">
+                                    Loan Duration
+                                </span>
+
+                                <span class="mi-feature-value"
+                                      style="color:#dc2626;">
+
+                                    −1.559
+
+                                </span>
+
+                            </div>
+
+                            <div class="mi-feature-track">
+
+                                <div class="mi-negative"
+                                     style="width:24.4%;"></div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- DOCTORATE -->
+
+                        <div class="mi-feature-row">
+
+                            <div class="mi-feature-top">
+
+                                <span class="mi-feature-name">
+                                    Doctorate Education
+                                </span>
+
+                                <span class="mi-feature-value"
+                                      style="color:#15803d;">
+
+                                    +1.478
+
+                                </span>
+
+                            </div>
+
+                            <div class="mi-feature-track">
+
+                                <div class="mi-positive"
+                                     style="width:23.1%;"></div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- LOAN AMOUNT -->
+
+                        <div class="mi-feature-row">
+
+                            <div class="mi-feature-top">
+
+                                <span class="mi-feature-name">
+                                    Loan Amount
+                                </span>
+
+                                <span class="mi-feature-value"
+                                      style="color:#dc2626;">
+
+                                    −1.457
+
+                                </span>
+
+                            </div>
+
+                            <div class="mi-feature-track">
+
+                                <div class="mi-negative"
+                                     style="width:22.8%;"></div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- HIGH SCHOOL -->
+
+                        <div class="mi-feature-row">
+
+                            <div class="mi-feature-top">
+
+                                <span class="mi-feature-name">
+                                    High School Education
+                                </span>
+
+                                <span class="mi-feature-value"
+                                      style="color:#dc2626;">
+
+                                    −1.398
+
+                                </span>
+
+                            </div>
+
+                            <div class="mi-feature-track">
+
+                                <div class="mi-negative"
+                                     style="width:21.9%;"></div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- UNEMPLOYED -->
+
+                        <div class="mi-feature-row">
+
+                            <div class="mi-feature-top">
+
+                                <span class="mi-feature-name">
+                                    Unemployed
+                                </span>
+
+                                <span class="mi-feature-value"
+                                      style="color:#dc2626;">
+
+                                    −1.000
+
+                                </span>
+
+                            </div>
+
+                            <div class="mi-feature-track">
+
+                                <div class="mi-negative"
+                                     style="width:15.7%;"></div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- CREDIT HISTORY -->
+
+                        <div class="mi-feature-row">
+
+                            <div class="mi-feature-top">
+
+                                <span class="mi-feature-name">
+                                    Length of Credit History
+                                </span>
+
+                                <span class="mi-feature-value"
+                                      style="color:#15803d;">
+
+                                    +0.935
+
+                                </span>
+
+                            </div>
+
+                            <div class="mi-feature-track">
+
+                                <div class="mi-positive"
+                                     style="width:14.6%;"></div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- BANKRUPTCY -->
+
+                        <div class="mi-feature-row">
+
+                            <div class="mi-feature-top">
+
+                                <span class="mi-feature-name">
+                                    Bankruptcy History
+                                </span>
+
+                                <span class="mi-feature-value"
+                                      style="color:#dc2626;">
+
+                                    −0.822
+
+                                </span>
+
+                            </div>
+
+                            <div class="mi-feature-track">
+
+                                <div class="mi-negative"
+                                     style="width:12.9%;"></div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- PREVIOUS DEFAULTS -->
+
+                        <div class="mi-feature-row">
+
+                            <div class="mi-feature-top">
+
+                                <span class="mi-feature-name">
+                                    Previous Loan Defaults
+                                </span>
+
+                                <span class="mi-feature-value"
+                                      style="color:#dc2626;">
+
+                                    −0.708
+
+                                </span>
+
+                            </div>
+
+                            <div class="mi-feature-track">
+
+                                <div class="mi-negative"
+                                     style="width:11.1%;"></div>
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 10. WHAT MODEL LEARNED
+            ================================================== -->
+
+            <section class="mi-section">
+
+                <div class="mi-section-heading">
+
+                    <h2>
+                        What the Model Learned
+                    </h2>
+
+                </div>
+
+
+                <div class="mi-card">
+
+                    <ul class="mi-list">
+
+                        <li>
+
+                            <strong>Total Debt-to-Income Ratio</strong>
+                            has the strongest negative coefficient,
+                            indicating that higher overall debt burden
+                            strongly reduces predicted approval probability.
+
+                        </li>
+
+
+                        <li>
+
+                            <strong>Annual Income</strong>
+                            is one of the strongest positive contributors
+                            to approval probability.
+
+                        </li>
+
+
+                        <li>
+
+                            <strong>Net Worth</strong>
+                            contributes positively, reflecting the importance
+                            of an applicant's financial position.
+
+                        </li>
+
+
+                        <li>
+
+                            <strong>Loan Amount and Loan Duration</strong>
+                            have negative coefficients, indicating that larger
+                            or longer borrowing requests tend to reduce the
+                            predicted approval probability.
+
+                        </li>
+
+
+                        <li>
+
+                            <strong>Bankruptcy History and Previous Loan Defaults</strong>
+                            negatively influence the model's prediction.
+
+                        </li>
+
+
+                        <li>
+
+                            Longer <strong>credit history</strong>
+                            contributes positively to the prediction.
+
+                        </li>
+
+                    </ul>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 11. WHY LOGISTIC REGRESSION
+            ================================================== -->
+
+            <section class="mi-section">
+
+                <div class="mi-section-heading">
+
+                    <h2>
+                        Why Logistic Regression Was Selected
+                    </h2>
+
+                </div>
+
+
+                <div class="mi-card">
+
+                    <div class="mi-text">
+
+                        Logistic Regression was selected as the final
+                        LoanIQ model because it combines
+                        <strong>strong predictive performance</strong>
+                        with
+                        <strong>high interpretability</strong>.
+
+                        <br><br>
+
+                        The tree-based models achieved very similar
+                        performance, but Logistic Regression provides
+                        coefficients that can be directly inspected.
+
+                        <br><br>
+
+                        This is particularly useful for LoanIQ because
+                        the application is designed not only to predict
+                        approval probability but also to explain the
+                        factors influencing an individual prediction.
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 12. WORKFLOW
+            ================================================== -->
+
+            <section class="mi-section">
+
+                <div class="mi-section-heading">
+
+                    <h2>
+                        LoanIQ Model Workflow
+                    </h2>
+
+                </div>
+
+
+                <div class="mi-card">
+
+                    <div class="mi-workflow">
+
+
+                        <div class="mi-workflow-box">
+
+                            <strong>
+                                Applicant Data
+                            </strong>
+
+                            <span>
+                                Personal, financial and credit information
+                            </span>
+
+                        </div>
+
+
+                        <div class="mi-workflow-box">
+
+                            <strong>
+                                Preprocessing
+                            </strong>
+
+                            <span>
+                                Numerical transformation and categorical encoding
+                            </span>
+
+                        </div>
+
+
+                        <div class="mi-workflow-box">
+
+                            <strong>
+                                Logistic Regression
+                            </strong>
+
+                            <span>
+                                Approval probability
+                            </span>
+
+                        </div>
+
+
+                        <div class="mi-workflow-box">
+
+                            <strong>
+                                Threshold 0.45
+                            </strong>
+
+                            <span>
+                                Final classification
+                            </span>
+
+                        </div>
+
+
+                        <div class="mi-workflow-box">
+
+                            <strong>
+                                Explanation
+                            </strong>
+
+                            <span>
+                                Important contributing factors
+                            </span>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 13. CSV PREVIEW
+            ================================================== -->
+
+            <section class="mi-section">
+
+                <div class="mi-section-heading">
+
+                    <h2>
+                        Dataset Preview
+                    </h2>
+
+                    <p>
+                        First 10 records from the actual LoanIQ CSV dataset.
+                    </p>
+
+                </div>
+
+
+                <div class="mi-card">
+
+
+                    {% if preview_data %}
+
+                    <div class="mi-table-wrapper">
+
+                        <table class="mi-csv-table">
+
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+                                        Application Date
+                                    </th>
+
+                                    <th>
+                                        Age
+                                    </th>
+
+                                    <th>
+                                        Annual Income
+                                    </th>
+
+                                    <th>
+                                        Credit Score
+                                    </th>
+
+                                    <th>
+                                        Loan Amount
+                                    </th>
+
+                                    <th>
+                                        Duration
+                                    </th>
+
+                                    <th>
+                                        Employment
+                                    </th>
+
+                                    <th>
+                                        Education
+                                    </th>
+
+                                    <th>
+                                        Purpose
+                                    </th>
+
+                                    <th>
+                                        Approved
+                                    </th>
+
+                                    <th>
+                                        Risk Score
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                                {% for row in preview_data %}
+
+                                <tr>
+
+                                    <td>
+                                        {{ row.ApplicationDate }}
+                                    </td>
+
+                                    <td>
+                                        {{ row.Age }}
+                                    </td>
+
+                                    <td>
+                                        {{ row.AnnualIncome }}
+                                    </td>
+
+                                    <td>
+                                        {{ row.CreditScore }}
+                                    </td>
+
+                                    <td>
+                                        {{ row.LoanAmount }}
+                                    </td>
+
+                                    <td>
+                                        {{ row.LoanDuration }}
+                                    </td>
+
+                                    <td>
+                                        {{ row.EmploymentStatus }}
+                                    </td>
+
+                                    <td>
+                                        {{ row.EducationLevel }}
+                                    </td>
+
+                                    <td>
+                                        {{ row.LoanPurpose }}
+                                    </td>
+
+                                    <td>
+
+                                        {% if row.LoanApproved == 1 %}
+
+                                            <span class="mi-approved">
+                                                Approved
+                                            </span>
+
+                                        {% else %}
+
+                                            <span class="mi-rejected">
+                                                Not Approved
+                                            </span>
+
+                                        {% endif %}
+
+                                    </td>
+
+                                    <td>
+                                        {{ row.RiskScore }}
+                                    </td>
+
+                                </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+
+                        </table>
+
+                    </div>
+
+
+                    {% else %}
+
+                    <div class="mi-insight-box">
+
+                        Dataset preview is currently unavailable.
+                        Please make sure
+
+                        <strong>
+                            data/Loan.csv
+                        </strong>
+
+                        exists in the project.
+
+                    </div>
+
+                    {% endif %}
+
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 14. DISCLAIMER
+            ================================================== -->
+
+            <section class="mi-section">
+
+                <div class="mi-card">
+
+                    <div class="mi-text">
+
+                        <strong>
+                            Interpretation Note
+                        </strong>
+
+                        <br><br>
+
+                        Logistic Regression coefficients represent
+                        statistical relationships learned by the model.
+                        They indicate how features influence the model's
+                        prediction but should not be interpreted as direct
+                        causal effects.
+
+                        <br><br>
+
+                        LoanIQ is an educational and analytical machine
+                        learning project. Its predictions should not be
+                        treated as official banking or lending decisions.
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+        </div>
+
+
+        <!-- =================================================
+             FOOTER
+        ================================================== -->
+
+        <footer>
+
+            LoanIQ · Data-Driven Loan Approval & Risk Analysis
+
+        </footer>
+
+
+    </main>
+
+</div>
+
+
+<!-- =========================================================
+     CHART JAVASCRIPT
+========================================================== -->
+
+<script>
+
+
+/* =========================================================
+   1. LOAN APPROVAL DISTRIBUTION
+========================================================== */
+
+new Chart(
+    document.getElementById("approvalChart"),
+    {
+
+        type: "bar",
+
+        data: {
+
+            labels: [
+                "Not Approved",
+                "Approved"
+            ],
+
+            datasets: [
+
+                {
+
+                    label: "Applications",
+
+                    data: [
+                        {{ not_approved_count }},
+                        {{ approved_count }}
+                    ]
+
+                }
+
+            ]
+
+        },
+
+        options: {
+
+            responsive: true,
+
+            maintainAspectRatio: false,
+
+            plugins: {
+
+                legend: {
+                    display: false
+                }
+
+            },
+
+            scales: {
+
+                y: {
+
+                    beginAtZero: true,
+
+                    title: {
+
+                        display: true,
+
+                        text:
+                            "Number of Applications"
+
+                    }
+
+                },
+
+                x: {
+
+                    title: {
+
+                        display: true,
+
+                        text:
+                            "Loan Approved"
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   2. RISK SCORE
+========================================================== */
+
+/*
+   Values are taken from the notebook boxplot visual.
+   This chart communicates the observed central tendency
+   and range between approved and non-approved groups.
+*/
+
+new Chart(
+    document.getElementById("riskChart"),
+    {
+
+        type: "line",
+
+        data: {
+
+            labels: [
+                "Minimum",
+                "Q1",
+                "Median",
+                "Q3",
+                "Maximum"
+            ],
+
+            datasets: [
+
+                {
+
+                    label: "Not Approved",
+
+                    data: [
+                        40,
+                        50,
+                        54,
+                        57,
+                        67
+                    ],
+
+                    tension: 0.25,
+
+                    pointRadius: 5
+
+                },
+
+                {
+
+                    label: "Approved",
+
+                    data: [
+                        30,
+                        37.5,
+                        40,
+                        42,
+                        49.5
+                    ],
+
+                    tension: 0.25,
+
+                    pointRadius: 5
+
+                }
+
+            ]
+
+        },
+
+        options: {
+
+            responsive: true,
+
+            maintainAspectRatio: false,
+
+            scales: {
+
+                y: {
+
+                    title: {
+
+                        display: true,
+
+                        text: "Risk Score"
+
+                    }
+
+                }
+
+            },
+
+            plugins: {
+
+                legend: {
+
+                    position: "bottom"
+
+                }
+
+            }
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   3. TOP NUMERICAL CORRELATIONS
+========================================================== */
+
+new Chart(
+    document.getElementById("correlationChart"),
+    {
+
+        type: "bar",
+
+        data: {
+
+            labels: [
+
+                "MonthlyIncome",
+                "AnnualIncome",
+                "NetWorth",
+                "TotalAssets",
+                "MonthlyLoanPayment",
+                "LoanAmount",
+                "BaseInterestRate",
+                "InterestRate",
+                "TotalDebtToIncomeRatio",
+                "RiskScore"
+
+            ],
+
+            datasets: [
+
+                {
+
+                    label:
+                        "Correlation with LoanApproved",
+
+                    data: [
+
+                        0.60,
+                        0.60,
+                        0.19,
+                        0.18,
+                        -0.19,
+                        -0.24,
+                        -0.25,
+                        -0.30,
+                        -0.41,
+                        -0.77
+
+                    ]
+
+                }
+
+            ]
+
+        },
+
+        options: {
+
+            indexAxis: "y",
+
+            responsive: true,
+
+            maintainAspectRatio: false,
+
+            plugins: {
+
+                legend: {
+                    display: false
+                }
+
+            },
+
+            scales: {
+
+                x: {
+
+                    min: -0.8,
+
+                    max: 0.7,
+
+                    title: {
+
+                        display: true,
+
+                        text:
+                            "Correlation with LoanApproved"
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   4. MODEL COMPARISON
+========================================================== */
+
+new Chart(
+    document.getElementById("modelComparisonChart"),
+    {
+
+        type: "bar",
+
+        data: {
+
+            labels: [
+
+                "Logistic Regression",
+                "Tuned Logistic",
+                "Gradient Boosting",
+                "Tuned Gradient Boosting",
+                "Random Forest"
+
+            ],
+
+            datasets: [
+
+                {
+
+                    label: "Accuracy",
+
+                    data: [
+                        93.33,
+                        93.20,
+                        92.75,
+                        93.25,
+                        91.50
+                    ]
+
+                },
+
+                {
+
+                    label: "Precision",
+
+                    data: [
+                        87.57,
+                        86.93,
+                        87.42,
+                        87.69,
+                        87.93
+                    ]
+
+                },
+
+                {
+
+                    label: "Recall",
+
+                    data: [
+                        84.00,
+                        84.21,
+                        81.38,
+                        83.47,
+                        74.69
+                    ]
+
+                },
+
+                {
+
+                    label: "F1 Score",
+
+                    data: [
+                        85.74,
+                        85.55,
+                        84.29,
+                        85.53,
+                        80.77
+                    ]
+
+                },
+
+                {
+
+                    label: "ROC-AUC",
+
+                    data: [
+                        97.86,
+                        97.87,
+                        97.46,
+                        97.79,
+                        96.57
+                    ]
+
+                }
+
+            ]
+
+        },
+
+        options: {
+
+            responsive: true,
+
+            maintainAspectRatio: false,
+
+            scales: {
+
+                y: {
+
+                    min: 70,
+
+                    max: 100,
+
+                    title: {
+
+                        display: true,
+
+                        text: "Score (%)"
+
+                    }
+
+                }
+
+            },
+
+            plugins: {
+
+                legend: {
+
+                    position: "bottom"
+
+                }
+
+            }
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   5. THRESHOLD ANALYSIS
+========================================================== */
+
+new Chart(
+    document.getElementById("thresholdChart"),
+    {
+
+        type: "line",
+
+        data: {
+
+            labels: [
+
+                "0.30",
+                "0.35",
+                "0.40",
+                "0.45",
+                "0.50",
+                "0.55",
+                "0.60",
+                "0.65",
+                "0.70"
+
+            ],
+
+            datasets: [
+
+                {
+
+                    label: "Accuracy",
+
+                    data: [
+                        92.05,
+                        92.52,
+                        92.95,
+                        93.28,
+                        93.32,
+                        93.35,
+                        92.98,
+                        93.00,
+                        92.65
+                    ],
+
+                    tension: 0.25
+
+                },
+
+                {
+
+                    label: "Precision",
+
+                    data: [
+                        78.89,
+                        81.08,
+                        83.50,
+                        86.04,
+                        87.57,
+                        88.94,
+                        89.85,
+                        91.63,
+                        93.21
+                    ],
+
+                    tension: 0.25
+
+                },
+
+                {
+
+                    label: "Recall",
+
+                    data: [
+                        91.11,
+                        89.64,
+                        87.87,
+                        85.77,
+                        84.00,
+                        82.43,
+                        79.60,
+                        77.82,
+                        74.69
+                    ],
+
+                    tension: 0.25
+
+                },
+
+                {
+
+                    label: "F1 Score",
+
+                    data: [
+                        84.56,
+                        85.15,
+                        85.63,
+                        85.91,
+                        85.74,
+                        85.56,
+                        84.41,
+                        84.16,
+                        82.93
+                    ],
+
+                    tension: 0.25,
+
+                    borderWidth: 3
+
+                }
+
+            ]
+
+        },
+
+        options: {
+
+            responsive: true,
+
+            maintainAspectRatio: false,
+
+            scales: {
+
+                x: {
+
+                    title: {
+
+                        display: true,
+
+                        text:
+                            "Decision Threshold"
+
+                    }
+
+                },
+
+                y: {
+
+                    min: 70,
+
+                    max: 100,
+
+                    title: {
+
+                        display: true,
+
+                        text:
+                            "Score (%)"
+
+                    }
+
+                }
+
+            },
+
+            plugins: {
+
+                legend: {
+
+                    position: "bottom"
+
+                }
+
+            }
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   6. POTENTIAL LEAKAGE HEATMAP
+========================================================== */
+
+const leakageLabels = [
+
+    "RiskScore",
+    "InterestRate",
+    "BaseInterestRate",
+    "MonthlyLoanPayment",
+    "TotalDebtToIncomeRatio"
+
+];
+
+
+const leakageMatrix = [
+
+    [1.00, 0.27, 0.26, 0.12, 0.34],
+
+    [0.27, 1.00, 0.83, 0.13, 0.13],
+
+    [0.26, 0.83, 1.00, 0.12, 0.13],
+
+    [0.12, 0.13, 0.12, 1.00, 0.57],
+
+    [0.34, 0.13, 0.13, 0.57, 1.00]
+
+];
+
+
+const heatmap =
+    document.getElementById("leakageHeatmap");
+
+
+/*
+   Header
+*/
+
+let heatmapHTML = "<thead><tr>";
+
+heatmapHTML += "<th></th>";
+
+
+leakageLabels.forEach(function(label) {
+
+    heatmapHTML +=
+        "<th>" +
+        label +
+        "</th>";
+
+});
+
+
+heatmapHTML += "</tr></thead>";
+
+
+/*
+   Body
+*/
+
+heatmapHTML += "<tbody>";
+
+
+leakageMatrix.forEach(function(row, i) {
+
+    heatmapHTML += "<tr>";
+
+    heatmapHTML +=
+        "<th>" +
+        leakageLabels[i] +
+        "</th>";
+
+
+    row.forEach(function(value) {
+
+        /*
+           Convert correlation to a light-to-dark
+           neutral intensity.
+        */
+
+        const intensity =
+            Math.round(
+                245 - (value * 140)
+            );
+
+
+        const textColor =
+            value >= 0.55
+                ? "#ffffff"
+                : "#111827";
+
+
+        heatmapHTML +=
+
+            "<td style=\"" +
+
+            "background:rgb(" +
+            intensity + "," +
+            intensity + "," +
+            intensity +
+            ");" +
+
+            "color:" +
+            textColor +
+            ";\">" +
+
+            value.toFixed(2) +
+
+            "</td>";
+
+    });
+
+
+    heatmapHTML += "</tr>";
+
+});
+
+
+heatmapHTML += "</tbody>";
+
+
+heatmap.innerHTML =
+    heatmapHTML;
+
+
+</script>
+
+
+</body>
+
+</html>

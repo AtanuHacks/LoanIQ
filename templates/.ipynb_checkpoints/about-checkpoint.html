@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>LoanIQ | About</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+
+        /* =========================================
+           ABOUT PAGE
+        ========================================== */
+
+        .about-container {
+            max-width: 1000px;
+        }
+
+
+        /* =========================================
+           INTRO
+        ========================================== */
+
+        .about-intro {
+            margin-bottom: 30px;
+        }
+
+        .about-intro h2 {
+            margin-bottom: 8px;
+        }
+
+        .about-intro p {
+            color: #6b7280;
+            line-height: 1.7;
+        }
+
+
+        /* =========================================
+           HERO CARD
+        ========================================== */
+
+        .about-hero {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 35px;
+            margin-bottom: 25px;
+        }
+
+        .about-logo {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .about-logo span {
+            font-weight: normal;
+        }
+
+        .about-tagline {
+            color: #6b7280;
+            font-size: 16px;
+            line-height: 1.7;
+            max-width: 800px;
+        }
+
+
+        /* =========================================
+           SECTION CARDS
+        ========================================== */
+
+        .about-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 28px;
+            margin-bottom: 20px;
+        }
+
+        .about-card h3 {
+            margin-top: 0;
+            margin-bottom: 12px;
+        }
+
+        .about-card p {
+            color: #6b7280;
+            line-height: 1.7;
+        }
+
+
+        /* =========================================
+           GRID
+        ========================================== */
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+
+        /* =========================================
+           FEATURE LIST
+        ========================================== */
+
+        .feature-list {
+            display: grid;
+            gap: 12px;
+            margin-top: 18px;
+        }
+
+        .feature-item {
+            padding: 15px;
+            background: #f9fafb;
+            border: 1px solid #f3f4f6;
+            border-radius: 8px;
+        }
+
+        .feature-item strong {
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .feature-item span {
+            color: #6b7280;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+
+        /* =========================================
+           TECHNOLOGY
+        ========================================== */
+
+        .tech-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        .tech-item {
+            padding: 9px 14px;
+            background: #f3f4f6;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+
+        /* =========================================
+           WORKFLOW
+        ========================================== */
+
+        .workflow {
+            display: grid;
+            grid-template-columns:
+                repeat(4, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .workflow-step {
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 18px;
+            text-align: center;
+        }
+
+        .workflow-number {
+            width: 32px;
+            height: 32px;
+            margin: 0 auto 10px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 50%;
+
+            background: #f3f4f6;
+
+            font-weight: bold;
+        }
+
+        .workflow-step strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .workflow-step span {
+            color: #6b7280;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+
+        /* =========================================
+           METRICS
+        ========================================== */
+
+        .metric-grid {
+            display: grid;
+            grid-template-columns:
+                repeat(4, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .metric-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 25px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .metric-label {
+            color: #6b7280;
+            font-size: 12px;
+        }
+
+
+        /* =========================================
+           DISCLAIMER
+        ========================================== */
+
+        .about-disclaimer {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 25px;
+
+            color: #6b7280;
+
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+
+        /* =========================================
+           ACTIONS
+        ========================================== */
+
+        .about-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 25px;
+        }
+
+
+        /* =========================================
+           RESPONSIVE
+        ========================================== */
+
+        @media (max-width: 800px) {
+
+            .workflow {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+            .metric-grid {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+        }
+
+
+        @media (max-width: 600px) {
+
+            .about-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .workflow {
+                grid-template-columns: 1fr;
+            }
+
+            .metric-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .about-hero,
+            .about-card {
+                padding: 22px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="app">
+
+
+    <!-- =========================================
+         SIDEBAR
+    ========================================== -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+
+            <span>Loan</span>IQ
+
+        </div>
+
+        <p class="tagline">
+
+            Loan Approval & Risk Analysis
+
+        </p>
+
+
+        <nav>
+
+            <a href="/">
+                Dashboard
+            </a>
+
+            <a href="/predict">
+                Predict Loan
+            </a>
+
+            <a href="/analytics">
+                Analytics
+            </a>
+
+            <a href="/model">
+                Model Insights
+            </a>
+
+            <a href="/about"
+               class="active">
+                About LoanIQ
+            </a>
+
+        </nav>
+
+    </aside>
+
+
+    <!-- =========================================
+         MAIN CONTENT
+    ========================================== -->
+
+    <main class="main">
+
+
+        <!-- =====================================
+             TOP BAR
+        ====================================== -->
+
+        <header class="topbar">
+
+            <div>
+
+                <h1>
+                    About LoanIQ
+                </h1>
+
+                <p>
+                    Understanding the project, model
+                    and system.
+                </p>
+
+            </div>
+
+        </header>
+
+
+        <div class="about-container">
+
+
+            <!-- =================================
+                 INTRO
+            ================================== -->
+
+            <section class="about-intro">
+
+                <h2>
+                    Data-Driven Loan Approval
+                    & Risk Analysis
+                </h2>
+
+                <p>
+
+                    LoanIQ is a machine learning based
+                    loan approval prediction and risk
+                    analysis system designed to demonstrate
+                    how applicant, financial and credit
+                    information can be used to estimate
+                    loan approval probability.
+
+                </p>
+
+            </section>
+
+
+            <!-- =================================
+                 HERO
+            ================================== -->
+
+            <section class="about-hero">
+
+                <div class="about-logo">
+
+                    <span>Loan</span>IQ
+
+                </div>
+
+                <div class="about-tagline">
+
+                    LoanIQ combines machine learning,
+                    data analysis and an interactive
+                    Flask web interface to provide
+                    loan eligibility predictions,
+                    applicant insights and model-based
+                    decision explanations.
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================
+                 PROJECT OBJECTIVE + DATASET
+            ================================== -->
+
+            <div class="about-grid">
+
+
+                <section class="about-card">
+
+                    <h3>
+                        🎯 Project Objective
+                    </h3>
+
+                    <p>
+
+                        The primary objective of LoanIQ is
+                        to build an interpretable machine
+                        learning system that estimates
+                        whether a loan application is likely
+                        to be approved.
+
+                    </p>
+
+                    <p>
+
+                        The project also demonstrates how
+                        exploratory analysis, feature
+                        evaluation, classification models
+                        and model interpretation can be
+                        combined into a practical ML
+                        application.
+
+                    </p>
+
+                </section>
+
+
+                <section class="about-card">
+
+                    <h3>
+                        📊 Dataset
+                    </h3>
+
+                    <p>
+
+                        LoanIQ uses a dataset containing
+                        <strong>20,000 loan applications</strong>
+                        and multiple applicant, financial,
+                        credit and loan-related attributes.
+
+                    </p>
+
+                    <p>
+
+                        The target variable is
+                        <strong>LoanApproved</strong>,
+                        representing whether an application
+                        was approved or not.
+
+                    </p>
+
+                </section>
+
+            </div>
+
+
+            <!-- =================================
+                 WHAT LOANIQ PROVIDES
+            ================================== -->
+
+            <section class="about-card">
+
+                <h3>
+                    🚀 What LoanIQ Provides
+                </h3>
+
+                <div class="feature-list">
+
+
+                    <div class="feature-item">
+
+                        <strong>
+                            🔮 Loan Prediction
+                        </strong>
+
+                        <span>
+
+                            Estimates the probability that
+                            a loan application will be approved.
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="feature-item">
+
+                        <strong>
+                            📈 Analytics
+                        </strong>
+
+                        <span>
+
+                            Explores approval patterns across
+                            income, credit score, employment,
+                            education, loan purpose and other
+                            applicant characteristics.
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="feature-item">
+
+                        <strong>
+                            🔎 Decision Explanation
+                        </strong>
+
+                        <span>
+
+                            Shows the strongest model factors
+                            that contributed positively or
+                            negatively to an individual
+                            prediction.
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="feature-item">
+
+                        <strong>
+                            🧠 Model Insights
+                        </strong>
+
+                        <span>
+
+                            Provides model performance,
+                            evaluation metrics and information
+                            about the selected machine learning
+                            approach.
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================
+                 MACHINE LEARNING APPROACH
+            ================================== -->
+
+            <section class="about-card">
+
+                <h3>
+                    🧠 Machine Learning Approach
+                </h3>
+
+                <p>
+
+                    Several classification models were
+                    evaluated during model development,
+                    including Logistic Regression,
+                    Gradient Boosting and Random Forest.
+
+                </p>
+
+                <p>
+
+                    <strong>Logistic Regression</strong>
+                    was selected as the final model because
+                    it provided strong predictive performance
+                    while remaining highly interpretable.
+
+                    This interpretability is particularly
+                    useful for LoanIQ because the system
+                    provides model-based explanations for
+                    individual predictions.
+
+                </p>
+
+                <div class="metric-grid">
+
+
+                    <div class="metric-card">
+
+                        <div class="metric-value">
+                            93.33%
+                        </div>
+
+                        <div class="metric-label">
+                            Accuracy
+                        </div>
+
+                    </div>
+
+
+                    <div class="metric-card">
+
+                        <div class="metric-value">
+                            87.57%
+                        </div>
+
+                        <div class="metric-label">
+                            Precision
+                        </div>
+
+                    </div>
+
+
+                    <div class="metric-card">
+
+                        <div class="metric-value">
+                            84.00%
+                        </div>
+
+                        <div class="metric-label">
+                            Recall
+                        </div>
+
+                    </div>
+
+
+                    <div class="metric-card">
+
+                        <div class="metric-value">
+                            97.86%
+                        </div>
+
+                        <div class="metric-label">
+                            ROC-AUC
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================
+                 WORKFLOW
+            ================================== -->
+
+            <section class="about-card">
+
+                <h3>
+                    ⚙️ LoanIQ Workflow
+                </h3>
+
+                <p>
+
+                    The system follows a complete machine
+                    learning workflow from data analysis
+                    to prediction and interpretation.
+
+                </p>
+
+
+                <div class="workflow">
+
+
+                    <div class="workflow-step">
+
+                        <div class="workflow-number">
+                            1
+                        </div>
+
+                        <strong>
+                            Data
+                        </strong>
+
+                        <span>
+
+                            Loan application data is
+                            prepared and analysed.
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="workflow-step">
+
+                        <div class="workflow-number">
+                            2
+                        </div>
+
+                        <strong>
+                            Model
+                        </strong>
+
+                        <span>
+
+                            Classification models are
+                            trained and evaluated.
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="workflow-step">
+
+                        <div class="workflow-number">
+                            3
+                        </div>
+
+                        <strong>
+                            Prediction
+                        </strong>
+
+                        <span>
+
+                            New applicant information is
+                            passed to the trained model.
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="workflow-step">
+
+                        <div class="workflow-number">
+                            4
+                        </div>
+
+                        <strong>
+                            Explanation
+                        </strong>
+
+                        <span>
+
+                            The prediction and influential
+                            factors are presented to the user.
+
+                        </span>
+
+                    </div>
+
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================
+                 TECHNOLOGY STACK
+            ================================== -->
+
+            <section class="about-card">
+
+                <h3>
+                    🛠️ Technology Stack
+                </h3>
+
+                <p>
+
+                    LoanIQ combines Python-based machine
+                    learning with a lightweight web
+                    application.
+
+                </p>
+
+
+                <div class="tech-grid">
+
+                    <div class="tech-item">
+                        Python
+                    </div>
+
+                    <div class="tech-item">
+                        Pandas
+                    </div>
+
+                    <div class="tech-item">
+                        NumPy
+                    </div>
+
+                    <div class="tech-item">
+                        Scikit-learn
+                    </div>
+
+                    <div class="tech-item">
+                        Flask
+                    </div>
+
+                    <div class="tech-item">
+                        HTML
+                    </div>
+
+                    <div class="tech-item">
+                        CSS
+                    </div>
+
+                    <div class="tech-item">
+                        JavaScript
+                    </div>
+
+                    <div class="tech-item">
+                        Chart.js
+                    </div>
+
+                    <div class="tech-item">
+                        Joblib
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================
+                 PROJECT STRUCTURE
+            ================================== -->
+
+            <section class="about-card">
+
+                <h3>
+                    📁 Project Components
+                </h3>
+
+                <div class="feature-list">
+
+
+                    <div class="feature-item">
+
+                        <strong>
+                            Dashboard
+                        </strong>
+
+                        <span>
+
+                            Central landing page providing
+                            access to all major LoanIQ features.
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="feature-item">
+
+                        <strong>
+                            Predict Loan
+                        </strong>
+
+                        <span>
+
+                            Interactive applicant form for
+                            generating loan approval predictions.
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="feature-item">
+
+                        <strong>
+                            Analytics
+                        </strong>
+
+                        <span>
+
+                            Dataset-level visual analysis and
+                            approval pattern exploration.
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="feature-item">
+
+                        <strong>
+                            Model Insights
+                        </strong>
+
+                        <span>
+
+                            Model performance and machine
+                            learning evaluation.
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="feature-item">
+
+                        <strong>
+                            About LoanIQ
+                        </strong>
+
+                        <span>
+
+                            Project overview, methodology,
+                            technology and objectives.
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================
+                 DISCLAIMER
+            ================================== -->
+
+            <div class="about-disclaimer">
+
+                <strong>
+                    ⚠️ Disclaimer
+                </strong>
+
+                <br><br>
+
+                LoanIQ is an educational and analytical
+                machine learning project.
+
+                Its predictions are estimates generated
+                by a trained model and should not be
+                interpreted as a definitive financial,
+                credit or lending decision.
+
+            </div>
+
+
+            <!-- =================================
+                 ACTIONS
+            ================================== -->
+
+            <div class="about-actions">
+
+                <a href="/predict"
+                   class="primary-button">
+
+                    Try Loan Prediction
+
+                </a>
+
+                <a href="/analytics"
+                   class="secondary-button">
+
+                    Explore Analytics
+
+                </a>
+
+                <a href="/"
+                   class="secondary-button">
+
+                    Back to Dashboard
+
+                </a>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- =========================================
+             FOOTER
+        ========================================== -->
+
+        <footer>
+
+            LoanIQ · Data-Driven Loan Approval & Risk Analysis
+
+        </footer>
+
+
+    </main>
+
+</div>
+
+</body>
+
+</html>
