@@ -23,11 +23,19 @@ app = Flask(__name__)
 # MODEL CONFIGURATION
 # =========================================================
 
-MODEL_PATH = "models/loanIQ_logistic_model.pkl"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-FINAL_THRESHOLD = 0.45
+MODEL_PATH = os.path.join(
+    BASE_DIR,
+    "models",
+    "loanIQ_logistic_model.pkl"
+)
 
-DATA_PATH = "data/Loan.csv"
+DATA_PATH = os.path.join(
+    BASE_DIR,
+    "data",
+    "Loan.csv"
+)
 
 
 # =========================================================
