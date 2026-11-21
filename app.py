@@ -23,6 +23,8 @@ app = Flask(__name__)
 # MODEL CONFIGURATION
 # =========================================================
 
+FINAL_THRESHOLD = 0.45
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 MODEL_PATH = os.path.join(
